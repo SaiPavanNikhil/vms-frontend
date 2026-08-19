@@ -1,0 +1,246 @@
+/* ===================================
+   PAGE
+=================================== */
+
+.section-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.page-header h2 {
+  font-size: 28px;
+  color: #1f2937;
+  margin-bottom: 5px;
+}
+
+.page-header p {
+  color: #6b7280;
+  font-size: 15px;
+}
+
+/* ===================================
+   FORM CARD
+=================================== */
+
+.form-card {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,.08);
+}
+
+.form-card h3 {
+  margin-bottom: 20px;
+  color: #1e3a8a;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #374151;
+}
+
+.form-group label span {
+  color: red;
+}
+
+.form-group input,
+.form-group select {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: .2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 5px rgba(37,99,235,.2);
+}
+
+/* ===================================
+   BUTTONS
+=================================== */
+
+.button-group {
+  margin-top: 25px;
+  display: flex;
+  gap: 15px;
+}
+
+.button-group button {
+  padding: 10px 22px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  font-weight: 600;
+  transition: .3s;
+}
+
+.save-btn {
+  background: #16a34a;
+}
+
+.save-btn:hover {
+  background: #15803d;
+}
+
+.update-btn {
+  background: #2563eb;
+}
+
+.update-btn:hover {
+  background: #1d4ed8;
+}
+
+.clear-btn {
+  background: #6b7280;
+}
+
+.clear-btn:hover {
+  background: #4b5563;
+}
+
+/* ===================================
+   TABLE CARD
+=================================== */
+
+.table-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,.08);
+  overflow: hidden;
+}
+
+.table-header {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.table-header h3 {
+  color: #1e3a8a;
+}
+
+.table-header input {
+  width: 280px;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  outline: none;
+}
+
+.table-header input:focus {
+  border-color: #2563eb;
+}
+
+/* ===================================
+   TABLE
+=================================== */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #1e3a8a;
+}
+
+thead th {
+  color: white;
+  padding: 14px;
+  text-align: left;
+  font-size: 14px;
+}
+
+tbody td {
+  padding: 14px;
+  border-bottom: 1px solid #ececec;
+  font-size: 14px;
+}
+
+tbody tr:hover {
+  background: #f8fafc;
+}
+
+.no-data {
+  text-align: center;
+  color: #888;
+  padding: 30px;
+}
+
+/* ===================================
+   ACTION BUTTONS
+=================================== */
+
+.edit-btn,
+.delete-btn {
+  border: none;
+  padding: 7px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  font-size: 13px;
+  margin-right: 8px;
+}
+
+.edit-btn {
+  background: #2563eb;
+}
+
+.edit-btn:hover {
+  background: #1d4ed8;
+}
+
+.delete-btn {
+  background: #dc2626;
+}
+
+.delete-btn:hover {
+  background: #b91c1c;
+}
+
+/* ===================================
+   RESPONSIVE
+=================================== */
+
+@media (max-width: 900px) {
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .table-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+
+  .table-header input {
+    width: 100%;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+}

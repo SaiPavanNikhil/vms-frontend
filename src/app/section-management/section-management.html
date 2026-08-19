@@ -1,0 +1,191 @@
+<div class="section-container">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2>Section Management</h2>
+        <p>Create and manage organization sections.</p>
+    </div>
+
+    <!-- ===========================
+            SECTION FORM
+    ============================ -->
+
+    <div class="form-card">
+
+        <h3>{{ isEditMode ? 'Update Section' : 'Add New Section' }}</h3>
+
+        <div class="form-grid">
+
+            <!-- Section Name -->
+            <div class="form-group">
+
+                <label>Section Name <span>*</span></label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="sectionForm.sectionName"
+                    name="sectionName"
+                    placeholder="Enter Section Name">
+
+            </div>
+
+            <!-- Section Incharge -->
+            <div class="form-group">
+
+                <label>Section Incharge</label>
+
+                <select
+                    [(ngModel)]="sectionForm.inchargeId"
+                    name="inchargeId">
+
+                    <option value="">-- Select Incharge --</option>
+
+                    <option
+                        *ngFor="let emp of employees"
+                        [value]="emp.employeeId">
+
+                        {{ emp.firstName }} {{ emp.lastName }}
+
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <!-- Buttons -->
+
+        <div class="button-group">
+
+            <button
+                class="save-btn"
+                *ngIf="!isEditMode"
+                (click)="saveSection()">
+
+                Save
+
+            </button>
+
+            <button
+                class="update-btn"
+                *ngIf="isEditMode"
+                (click)="updateSection()">
+
+                Update
+
+            </button>
+
+            <button
+                class="clear-btn"
+                (click)="clearForm()">
+
+                {{ isEditMode ? 'Cancel' : 'Clear' }}
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ===========================
+            SECTION LIST
+    ============================ -->
+
+    <div class="table-card">
+
+        <div class="table-header">
+
+            <h3>Section List</h3>
+
+            <input
+                type="text"
+                placeholder="Search Section..."
+                [(ngModel)]="searchText"
+                (ngModelChange)="onSearch()"
+                name="searchText">
+
+        </div>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Section ID</th>
+
+                    <th>Section Name</th>
+
+                    <th>Incharge</th>
+
+                    <th style="width:150px;">Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @for (section of filteredSectionList; track section.sectionId) {
+
+                    
+                    <tr>
+
+                        <td>
+                            {{ section.sectionId }}
+                        </td>
+
+                        <td>
+                            {{ section.sectionName }}
+                        </td>
+
+                        <td>
+                            {{ section.inchargeName || '-' }}
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="edit-btn"
+                                (click)="editSection(section)">
+
+                                Edit
+
+                            </button>
+
+                            <button
+                                class="delete-btn"
+                                (click)="deleteSection(section.sectionId)">
+
+                                Delete
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                }
+
+                @if (filteredSectionList.length === 0) {
+
+                    <tr>
+
+                        <td colspan="4" class="no-data">
+
+                            No Sections Found
+
+                        </td>
+
+                    </tr>
+
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

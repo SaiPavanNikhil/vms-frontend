@@ -1,0 +1,915 @@
+<div class="meeting-page">
+
+  <!-- ==========================================
+       PAGE HEADER
+  =========================================== -->
+
+  <div class="page-header">
+
+    <div>
+      <h1>Schedule Meeting</h1>
+
+      <p>
+        Schedule a meeting and invite participants
+      </p>
+    </div>
+
+
+    <div class="organizer-info">
+
+      <div class="organizer-avatar">
+        {{ employeeName.charAt(0) || 'E' }}
+      </div>
+
+      <div class="organizer-details">
+
+        <span>Meeting Organizer</span>
+
+        <strong>
+          {{ employeeName || 'Employee' }}
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==========================================
+       MAIN FORM CARD
+  =========================================== -->
+
+  <div class="meeting-card">
+
+
+    <!-- ========================================
+         MEETING DETAILS
+    ========================================= -->
+
+    <div class="section-header">
+
+      <div class="section-number">
+        01
+      </div>
+
+      <div>
+
+        <h2>Meeting Details</h2>
+
+        <p>
+          Enter the details of the meeting
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="form-grid">
+
+
+      <!-- Meeting Title -->
+
+      <div class="form-group">
+
+        <label for="meetingTitle">
+
+          Meeting Title
+
+          <span class="required">*</span>
+
+        </label>
+
+        <input
+          id="meetingTitle"
+          type="text"
+          name="meetingTitle"
+          [(ngModel)]="meetingTitle"
+          placeholder="Enter meeting title"
+          maxlength="100"
+        />
+
+      </div>
+      <div class="form-group">
+
+        <label for="meetingTitle">
+
+          Meeting Purpose
+
+          <span class="required">*</span>
+
+        </label>
+
+        <input
+          id="meetingTitle"
+          type="text"
+          name="meetingTitle"
+          [(ngModel)]="meetingPurpose"
+          placeholder="Enter meeting title"
+          maxlength="100"
+        />
+
+      </div>
+
+
+      <!-- Meeting Date -->
+
+      <div class="form-group">
+
+        <label for="meetingDate">
+
+          Meeting Date
+
+          <span class="required">*</span>
+
+        </label>
+
+        <input
+          id="meetingDate"
+          type="date"
+          name="meetingDate"
+          [(ngModel)]="meetingDate"
+          [min]="minMeetingDate"
+          (ngModelChange)="onMeetingDateChange()"
+        />
+
+      </div>
+
+
+      <!-- Meeting Time -->
+
+      <div class="form-group">
+
+        <label for="meetingTime">
+
+          Meeting Time
+
+          <span class="required">*</span>
+
+        </label>
+
+        <input
+          id="meetingTime"
+          type="time"
+          name="meetingTime"
+          [(ngModel)]="meetingTime"
+          [min]="minMeetingTime"
+        />
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================================
+         DIVIDER
+    ========================================= -->
+
+    <div class="section-divider"></div>
+
+
+    <!-- ========================================
+         PARTICIPANTS
+    ========================================= -->
+
+    <div class="section-header">
+
+      <div class="section-number">
+        02
+      </div>
+
+      <div>
+
+        <h2>Meeting Participants</h2>
+
+        <p>
+          Enter the visitor's mobile number to find
+          their registration
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================================
+         MOBILE SEARCH
+    ========================================= -->
+
+    <div class="visitor-search-card">
+
+      <div class="visitor-search-row">
+
+
+        <!-- Mobile Number -->
+
+        <div class="form-group visitor-mobile-group">
+
+          <label for="visitorMobile">
+
+            Visitor Mobile Number
+
+            <span class="required">*</span>
+
+          </label>
+
+
+          <input
+            id="visitorMobile"
+            type="tel"
+            name="visitorMobile"
+            [(ngModel)]="visitorMobile"
+            (ngModelChange)="onVisitorMobileChange()"
+            placeholder="Enter 10 digit mobile number"
+            maxlength="10"
+            inputmode="numeric"
+            autocomplete="off"
+          />
+
+
+          <!-- <small class="search-hint">
+
+            Visitor registration will be searched
+            automatically after 10 digits.
+
+          </small> -->
+
+        </div>
+
+
+        <!-- ====================================
+             SEARCH LOADING
+        ===================================== -->
+
+        <div
+          class="visitor-search-status"
+          *ngIf="searchingVisitor">
+
+          <span class="search-spinner"></span>
+
+          Searching visitor...
+
+        </div>
+
+      </div>
+
+
+      <!-- ====================================
+           SEARCH ERROR
+      ===================================== -->
+
+      <!-- <div
+        class="visitor-error"
+        *ngIf="visitorError">
+
+        {{ visitorError }}
+
+      </div> -->
+
+    </div>
+
+
+    <!-- ========================================
+         VISITOR DETAILS
+         SHOWN AFTER SEARCH
+    ========================================= -->
+
+    <div
+      class="visitor-details-card"
+      *ngIf="
+        visitorSearched &&
+        !searchingVisitor
+      ">
+
+
+      <!-- ======================================
+           VISITOR HEADER
+      ======================================= -->
+
+      <div class="visitor-details-header">
+
+        <div>
+
+          <h3>
+
+            {{
+              visitorFound
+                ? 'Visitor Details'
+                : 'Visitor Registration'
+            }}
+
+          </h3>
+
+
+          <!-- Existing -->
+
+          <p *ngIf="visitorFound">
+
+            Registration found. Review the details
+            before adding the visitor to the meeting.
+
+          </p>
+
+
+          <!-- New -->
+
+          <p *ngIf="visitorNotFound">
+
+            <strong>No registration found.</strong>
+
+            Enter the visitor details below to create
+            a new registration.
+
+          </p>
+
+        </div>
+
+
+        <!-- ====================================
+             EXISTING BADGE
+        ===================================== -->
+
+        <span
+          class="visitor-found-badge"
+          *ngIf="visitorFound">
+
+          ✓ Registration Found
+
+        </span>
+
+
+        <!-- ====================================
+             NEW BADGE
+        ===================================== -->
+
+        <span
+          class="visitor-new-badge"
+          *ngIf="visitorNotFound">
+
+          + New Registration
+
+        </span>
+
+      </div>
+
+
+      <!-- ======================================
+           VISITOR FORM
+      ======================================= -->
+
+      <div class="visitor-form-grid">
+
+
+        <!-- ====================================
+             FIRST NAME
+        ===================================== -->
+
+        <div class="form-group">
+
+          <label for="visitorFirstName">
+
+            First Name
+
+            <span class="required">*</span>
+
+          </label>
+
+
+          <input
+            id="visitorFirstName"
+            type="text"
+            name="visitorFirstName"
+            [(ngModel)]="visitorFirstName"
+            placeholder="First name"
+            maxlength="15"
+          />
+
+        </div>
+
+
+        <!-- ====================================
+             LAST NAME
+        ===================================== -->
+
+        <div class="form-group">
+
+          <label for="visitorLastName">
+
+            Last Name
+
+          </label>
+
+
+          <input
+            id="visitorLastName"
+            type="text"
+            name="visitorLastName"
+            [(ngModel)]="visitorLastName"
+            placeholder="Last name"
+            maxlength="20"
+          />
+
+        </div>
+
+
+        <!-- ====================================
+             EMAIL
+        ===================================== -->
+
+        <div class="form-group">
+
+          <label for="visitorEmail">
+
+            Email
+
+          </label>
+
+
+          <input
+            id="visitorEmail"
+            type="email"
+            name="visitorEmail"
+            [(ngModel)]="visitorEmail"
+            placeholder="Email address"
+            maxlength="50"
+          />
+
+        </div>
+
+
+        <!-- ====================================
+             ORGANISATION
+        ===================================== -->
+
+        <div class="form-group">
+
+          <label for="visitorOrganisation">
+
+            Organisation
+
+          </label>
+
+
+          <input
+            id="visitorOrganisation"
+            type="text"
+            name="visitorOrganisation"
+            [(ngModel)]="visitorOrganisation"
+            placeholder="Organisation"
+            maxlength="50"
+          />
+
+        </div>
+
+
+        <!-- ====================================
+             ADDRESS
+        ===================================== -->
+
+        <!-- <div class="form-group full-width">
+
+          <label for="visitorAddress">
+
+            Address
+
+            <span class="required">*</span>
+
+          </label>
+
+
+          <input
+            id="visitorAddress"
+            type="text"
+            name="visitorAddress"
+            [(ngModel)]="visitorAddress"
+            placeholder="Enter address"
+            maxlength="30"
+          />
+
+        </div> -->
+
+
+        <!-- ====================================
+             STATE
+        ===================================== -->
+
+        <!-- <div class="form-group">
+
+          <label for="visitorState">
+
+            State
+
+            <span class="required">*</span>
+
+          </label>
+
+
+          <input
+            id="visitorState"
+            type="text"
+            name="visitorState"
+            [(ngModel)]="visitorState"
+            placeholder="State"
+            maxlength="10"
+          />
+
+        </div> -->
+
+
+        <!-- ====================================
+             DISTRICT
+        ===================================== -->
+
+        <!-- <div class="form-group">
+
+          <label for="visitorDistrict">
+
+            District
+
+            <span class="required">*</span>
+
+          </label>
+
+
+          <input
+            id="visitorDistrict"
+            type="text"
+            name="visitorDistrict"
+            [(ngModel)]="visitorDistrict"
+            placeholder="District"
+            maxlength="20"
+          />
+
+        </div> -->
+
+      </div>
+
+
+      <!-- ======================================
+     VISITOR ACTIONS
+======================================= -->
+
+<div class="visitor-actions">
+
+
+  <!-- ====================================
+       EXISTING + NO CHANGES
+  ===================================== -->
+
+  @if (visitorFound && !hasVisitorChanges()) {
+
+    <button
+      type="button"
+      class="create-add-button"
+      (click)="addExistingVisitor()"
+      [disabled]="updatingVisitor">
+
+      ✓ Add to Meeting
+
+    </button>
+
+  }
+
+
+  <!-- ====================================
+       EXISTING + CHANGED
+  ===================================== -->
+
+  @if (visitorFound && hasVisitorChanges()) {
+
+    <button
+      type="button"
+      class="update-add-button"
+      (click)="updateExistingVisitor()"
+      [disabled]="updatingVisitor">
+
+
+      @if (!updatingVisitor) {
+
+        ✓
+
+      }
+
+
+      @if (updatingVisitor) {
+
+        ⏳
+
+      }
+
+
+      {{
+        updatingVisitor
+          ? 'Updating...'
+          : 'Update & Add to Meeting'
+      }}
+
+    </button>
+
+  }
+
+
+  <!-- ====================================
+       NEW VISITOR
+  ===================================== -->
+
+  @if (visitorSearched && !visitorFound && !searchingVisitor) {
+
+    <button
+      type="button"
+      class="create-add-button"
+      (click)="saveNewVisitor()"
+      [disabled]="updatingVisitor">
+
+
+      @if (!updatingVisitor) {
+
+        +
+
+      }
+
+
+      @if (updatingVisitor) {
+
+        ⏳
+
+      }
+
+
+      {{
+        updatingVisitor
+          ? 'Creating...'
+          : 'Create & Add to Meeting'
+      }}
+
+    </button>
+
+  }
+
+</div>
+
+    </div>
+
+
+    <!-- ========================================
+         PARTICIPANTS TABLE
+    ========================================= -->
+
+    <div
+      class="participants-table-section"
+      *ngIf="participants.length > 0">
+
+
+      <!-- Table Header -->
+
+      <div class="table-header">
+
+        <div>
+
+          <h3>
+            Participants
+          </h3>
+
+          <span>
+
+            {{ participants.length }}
+
+            {{
+              participants.length === 1
+                ? 'person'
+                : 'people'
+            }}
+
+            added
+
+          </span>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="clear-button"
+          (click)="clearParticipants()">
+
+          Clear All
+
+        </button>
+
+      </div>
+
+
+      <!-- Table -->
+
+      <div class="table-container">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                #
+              </th>
+
+              <th>
+                Name
+              </th>
+
+              <th>
+                Email
+              </th>
+
+              <th>
+                Mobile Number
+              </th>
+              
+              <th>
+                Organisation
+              </th>
+
+              <th>
+                Action
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngFor="
+                let participant of participants;
+                let i = index
+              ">
+
+
+              <!-- Serial -->
+
+              <td class="serial-number">
+
+                {{ i + 1 }}
+
+              </td>
+
+
+              <!-- Name -->
+
+              <td>
+
+                <div class="participant-name-cell">
+
+
+                  <div class="participant-avatar">
+
+                    {{
+                      participant.name
+                        .charAt(0)
+                        .toUpperCase()
+                    }}
+
+                  </div>
+
+
+                  <span>
+
+                    {{ participant.name }}
+
+                  </span>
+
+                </div>
+
+              </td>
+
+
+              <!-- Email -->
+
+              <td>
+
+                {{ participant.email || '—' }}
+
+              </td>
+
+
+              <!-- Mobile -->
+
+              <td>
+
+                {{ participant.mobileNo }}
+
+              </td>
+              
+              <td>
+
+                {{ participant.organisation }}
+
+              </td>
+
+
+              <!-- Action -->
+
+              <td>
+
+                <button
+                  type="button"
+                  class="remove-button"
+                  (click)="removeParticipant(i)"
+                  title="Remove participant">
+
+                  ✕
+
+                </button>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================================
+         EMPTY PARTICIPANTS
+    ========================================= -->
+
+    <div
+      class="empty-participants"
+      *ngIf="participants.length === 0">
+
+
+      <div class="empty-icon">
+        👥
+      </div>
+
+
+      <h3>
+        No participants added
+      </h3>
+
+
+      <p>
+
+        Enter a visitor's mobile number above
+        to search and add them to the meeting.
+
+      </p>
+
+    </div>
+
+
+    <!-- ========================================
+         FORM ACTIONS
+    ========================================= -->
+
+    <div class="form-actions">
+
+
+      <!-- Reset -->
+
+      <button
+        type="button"
+        class="reset-button"
+        (click)="resetMeetingForm()"
+        [disabled]="saving || updatingVisitor">
+
+        Reset
+
+      </button>
+
+
+      <!-- Schedule -->
+
+      <button
+        type="button"
+        class="schedule-button"
+        (click)="scheduleMeeting()"
+        [disabled]="saving || updatingVisitor">
+
+
+        <span *ngIf="!saving">
+          📅
+        </span>
+
+
+        {{
+          saving
+            ? 'Scheduling...'
+            : 'Schedule Meeting'
+        }}
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

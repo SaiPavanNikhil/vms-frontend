@@ -1,0 +1,259 @@
+<!-- Page Title -->
+<div class="page-header">
+
+    <h2>Dashboard</h2>
+
+    <p>
+        Welcome to the Visitor Management System Admin Panel
+    </p>
+
+</div>
+
+
+<!-- ==========================================
+        DASHBOARD CARDS
+=========================================== -->
+
+<div class="stats-container">
+
+    <div class="stat-card">
+
+        <div class="card-title">
+            Total Meetings Today
+        </div>
+
+        <div class="card-value">
+            {{ totalMeetingsToday }}
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="card-title">
+            Active Meetings
+        </div>
+
+        <div class="card-value">
+            {{ activeMeetings }}
+        </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+        <div class="card-title">
+            Completed Meetings
+        </div>
+
+        <div class="card-value">
+            {{ completedMeetings }}
+        </div>
+
+    </div>
+
+
+    <!-- <div class="stat-card">
+
+        <div class="card-title">
+            Today's Visits
+        </div>
+
+        <div class="card-value">
+            {{ todayVisitors }}
+        </div>
+
+    </div> -->
+
+</div>
+
+
+<!-- ==========================================
+        RECENT VISITOR MEETINGS
+=========================================== -->
+
+<div class="recent-card">
+
+    <div class="card-header">
+
+        <div>
+
+            <h3>Recent Visitor Meetings</h3>
+
+            <p>Latest visitor activity</p>
+
+        </div>
+
+
+        <!-- Search -->
+        <input
+            type="text"
+            class="search-input"
+            [(ngModel)]="searchText"
+            (ngModelChange)="onSearch()"
+            placeholder="Search visitor or employee...">
+
+    </div>
+
+
+    <!-- ======================================
+            TABLE
+    ======================================= -->
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Visitor</th>
+
+                    <th>Mobile</th>
+
+                    <th>Organisation</th>
+
+                    <th>Host Employee</th>
+
+                    <th>Section</th>
+
+                    <th>Meeting Date</th>
+
+                    <th>Meeting Time</th>
+
+                    <th>Entry</th>
+
+                    <!-- <th>Exit</th> -->
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                @for (visitor of filteredVisitors; track visitor.meetingId) {
+
+                    <tr>
+
+                        <!-- Visitor -->
+                        <td>
+
+                            {{ visitor.visitorName }}
+
+                        </td>
+
+
+                        <!-- Mobile -->
+                        <td>
+
+                            {{ visitor.mobileNo }}
+
+                        </td>
+
+
+                        <!-- Organisation -->
+                        <td>
+
+                            {{ visitor.organisation || '-' }}
+
+                        </td>
+
+
+                        <!-- Host -->
+                        <td>
+
+                            {{ visitor.hostName || '-' }}
+
+                        </td>
+
+
+                        <!-- Section -->
+                        <td>
+
+                            {{ visitor.sectionName || '-' }}
+
+                        </td>
+
+
+                        <!-- Meeting Date -->
+                        <td>
+
+                            {{ visitor.meetingDate || '-' }}
+
+                        </td>
+
+
+                        <!-- Meeting Time -->
+                        <td>
+
+                            {{ visitor.meetingTime || '-' }}
+
+                        </td>
+
+
+                        <!-- Entry -->
+                        <td>
+
+                            {{ visitor.entryTime || '-' }}
+
+                        </td>
+
+
+                        <!-- Exit -->
+                        <!-- <td>
+
+                            {{ visitor.exitTime || '-' }}
+
+                        </td> -->
+
+
+                        <!-- Status -->
+                        <td>
+
+                            <span
+                                class="status-badge"
+                                [class.status-pending]="visitor.status === 'Hold'"
+                                [class.status-in]="visitor.status === 'Accepted'"
+                                [class.status-out]="visitor.status === 'Rejected'">
+
+                                {{ visitor.status }}
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                }
+
+
+                <!-- No Data -->
+                @if (filteredVisitors.length === 0) {
+
+                    <tr>
+
+                        <td
+                            colspan="10"
+                            class="empty-row">
+
+                            No visitor meetings found.
+
+                        </td>
+
+                    </tr>
+
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

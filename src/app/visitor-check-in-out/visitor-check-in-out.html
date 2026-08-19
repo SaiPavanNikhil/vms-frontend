@@ -1,0 +1,420 @@
+<div class="visitor-checkin-page">
+
+  <div class="checkin-card">
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <div class="page-header">
+
+      <div class="header-icon">
+        ✓
+      </div>
+
+      <h1>Visitor Check-In</h1>
+
+      <p>
+        Enter your registered mobile number
+      </p>
+
+    </div>
+
+
+    <!-- =========================
+         MOBILE NUMBER
+    ========================== -->
+
+    <div class="mobile-section">
+
+      <label for="mobileNo">
+        Mobile Number
+      </label>
+
+      <div class="mobile-input-wrapper">
+
+        <input
+          id="mobileNo"
+          type="tel"
+          maxlength="10"
+          inputmode="numeric"
+          autocomplete="tel"
+          [(ngModel)]="mobileNo"
+          placeholder="Enter 10 digit mobile number"
+          (input)="onMobileInput()"
+        />
+
+      </div>
+
+      <small class="input-hint">
+        Enter the mobile number used while requesting the meeting.
+      </small>
+
+    </div>
+
+
+    <!-- =========================
+         LOADING
+    ========================== -->
+
+    <div
+      class="loading-section"
+      *ngIf="searching">
+
+      <div class="loader"></div>
+
+      <p>
+        Fetching your meeting details...
+      </p>
+
+    </div>
+
+
+    <!-- =========================
+         ERROR
+    ========================== -->
+
+    <div
+      class="error-message"
+      *ngIf="errorMessage">
+
+      <div class="error-icon">
+        !
+      </div>
+
+      <div>
+        {{ errorMessage }}
+      </div>
+
+    </div>
+
+
+    <!-- =========================
+         VISITOR DETAILS
+    ========================== -->
+
+    <div
+      class="details-container"
+      *ngIf="visitorData && !searching">
+
+
+      <!-- =========================
+           VISITOR DETAILS
+      ========================== -->
+
+      <div class="details-section">
+
+        <div class="section-heading">
+
+          <span class="section-icon">
+            👤
+          </span>
+
+          <h3>
+            Visitor Details
+          </h3>
+
+        </div>
+
+
+        <div class="details-grid">
+
+          <!-- NAME -->
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Name
+            </span>
+
+            <span class="detail-value">
+              {{ visitorData.firstName }}
+              {{ visitorData.lastName }}
+            </span>
+
+          </div>
+
+
+          <!-- MOBILE -->
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Mobile Number
+            </span>
+
+            <span class="detail-value">
+              {{ visitorData.mobileNo }}
+            </span>
+
+          </div>
+
+
+          <!-- ORGANISATION -->
+
+          <div
+            class="detail-item"
+            *ngIf="visitorData.organisation">
+
+            <span class="detail-label">
+              Organisation
+            </span>
+
+            <span class="detail-value">
+              {{ visitorData.organisation }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           MEETING DETAILS
+      ========================== -->
+
+      <div class="details-section">
+
+        <div class="section-heading">
+
+          <span class="section-icon">
+            📅
+          </span>
+
+          <h3>
+            Meeting Details
+          </h3>
+
+        </div>
+
+
+        <div class="details-grid">
+
+          <!-- MEETING WITH -->
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Meeting With
+            </span>
+
+            <span class="detail-value">
+              {{ visitorData.hostId }}
+            </span>
+
+          </div>
+
+
+          <!-- MEETING DATE -->
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Meeting Date
+            </span>
+
+            <span class="detail-value">
+              {{ visitorData.approvedMeetingDate }}
+            </span>
+
+          </div>
+
+
+          <!-- MEETING TIME -->
+
+          <div class="detail-item">
+
+            <span class="detail-label">
+              Meeting Time
+            </span>
+
+            <span class="detail-value">
+              {{ visitorData.approvedMeetingTime }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           ACCEPTANCE STATUS
+      ========================== -->
+
+      <div
+        class="meeting-status accepted"
+        *ngIf="visitorData.acceptFlag === 'Y'">
+
+        <span class="status-icon">
+          ✓
+        </span>
+
+        <div>
+
+          <strong>
+            Meeting Accepted
+          </strong>
+
+          <span>
+            You are allowed to check in.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           CURRENT VISIT STATUS
+      ========================== -->
+
+      <div
+        class="visit-status"
+        *ngIf="
+          visitorData.entryTime ||
+          visitorData.exitTime
+        ">
+
+
+        <!-- ENTRY TIME -->
+
+        <div
+          class="visit-time"
+          *ngIf="visitorData.entryTime">
+
+          <span class="time-label">
+            Entry Time
+          </span>
+
+          <strong>
+            {{ visitorData.entryTime }}
+          </strong>
+
+        </div>
+
+
+        <!-- EXIT TIME -->
+
+        <div
+          class="visit-time"
+          *ngIf="visitorData.exitTime">
+
+          <span class="time-label">
+            Exit Time
+          </span>
+
+          <strong>
+            {{ visitorData.exitTime }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- =========================
+           CHECK IN
+      ========================== -->
+
+      <!-- <button
+        type="button"
+        class="action-btn check-in-btn"
+        *ngIf="isNotCheckedIn()"
+        [disabled]="processing"
+        (click)="checkInOut()">
+
+        <span *ngIf="!processing">
+          Check In
+        </span>
+
+        <span *ngIf="processing">
+          Checking In...
+        </span>
+
+      </button> -->
+
+
+      <!-- =========================
+           CHECK OUT
+      ========================== -->
+
+      <!-- <button
+        type="button"
+        class="action-btn check-out-btn"
+        *ngIf="isCheckedIn()"
+        [disabled]="processing"
+        (click)="checkInOut()">
+
+        <span *ngIf="!processing">
+          Check Out
+        </span>
+
+        <span *ngIf="processing">
+          Checking Out...
+        </span>
+
+      </button> -->
+
+
+      <!-- =========================
+           COMPLETED
+      ========================== -->
+
+      <div
+        class="completed-section"
+        *ngIf="isVisitCompleted()">
+
+        <div class="completed-icon">
+          ✓
+        </div>
+
+        <h3>
+          Visit Completed
+        </h3>
+
+        <p>
+          Thank you for visiting.
+        </p>
+
+      </div>
+
+
+    </div>
+
+
+    <!-- =========================
+         SUCCESS MESSAGE
+    ========================== -->
+
+    <div
+      class="success-message"
+      *ngIf="successMessage">
+
+      <span class="success-icon">
+        ✓
+      </span>
+
+      {{ successMessage }}
+
+    </div>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <div class="page-footer">
+
+      <span>
+        Visitor Management System
+      </span>
+
+    </div>
+
+  </div>
+
+</div>

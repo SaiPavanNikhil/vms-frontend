@@ -1,0 +1,250 @@
+:host{
+  --pass-blue-deep:#14325C;
+  --pass-blue:#1F4E8C;
+  --pass-danger:#A33B3B;
+  --ink:#14213B;
+  --slate:#5B6B7F;
+  --line:#E4E8EE;
+  --verify:#2F6B4F;
+  --stage:#0D0F22;
+}
+
+.modal-overlay{
+  min-height:100vh;
+  width:100%;
+  background:
+    radial-gradient(1200px 600px at 20% -10%, #1B1F42 0%, transparent 60%),
+    radial-gradient(1000px 500px at 100% 10%, #201B3A 0%, transparent 55%),
+    var(--stage);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:48px 20px;
+  font-family:'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+.loading-state,
+.error-state{
+  color:#C9CCE4;
+  font-size:14px;
+  text-align:center;
+}
+.error-state{
+  background:#fff;
+  color:var(--pass-danger);
+  padding:20px 24px;
+  border-radius:14px;
+  max-width:360px;
+}
+
+/* ---------- card shell ---------- */
+.pass-card{
+  width:420px;
+  max-width:100%;
+  background:#ffffff;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 30px 60px -20px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+/* ---------- header ---------- */
+.pass-header{
+  background:var(--pass-blue-deep);
+  padding:22px 26px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.rejected-header{
+  background:var(--pass-danger);
+}
+.pass-header-icon{
+  width:34px; height:34px;
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.pass-header-icon svg{ width:28px; height:28px; }
+.pass-header-text h2{
+  margin:0;
+  color:#fff;
+  font-size:20px;
+  font-weight:700;
+  letter-spacing:0.01em;
+}
+.pass-header-text p{
+  margin:2px 0 0;
+  color:#CBD8E8;
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:0.02em;
+  text-transform:uppercase;
+}
+.rejected-header .pass-header-text p{ color:#F3D6D6; }
+
+/* ---------- body ---------- */
+.pass-body{
+  padding:22px 26px 4px;
+}
+
+.id-fields{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.id-row{
+  display:grid;
+  grid-template-columns:96px 10px 1fr;
+  align-items:baseline;
+  font-size:13.5px;
+}
+.id-label{ color:var(--slate); font-weight:500; }
+.id-colon{ color:var(--slate); }
+.id-value{ color:var(--ink); font-weight:600; }
+
+.pass-divider{
+  border-top:1px solid var(--line);
+  margin:18px 0 16px;
+}
+
+.meta-list{
+  display:flex;
+  flex-direction:column;
+  gap:11px;
+}
+.meta-item{
+  display:flex;
+  align-items:flex-start;
+  gap:9px;
+  font-size:13px;
+  color:#1F2937;
+}
+.meta-icon{
+  width:18px; height:18px;
+  flex-shrink:0;
+  margin-top:1px;
+}
+.meta-item b{ font-weight:600; color:var(--ink); }
+.meta-item.verified b,
+.meta-item.verified span{ color:var(--verify); }
+
+.pass-meta-row{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  padding-bottom:18px;
+}
+
+.qr-block{
+  flex-shrink:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+}
+.qr{
+  width:80px; height:80px;
+  background:var(--pass-blue-deep);
+  border-radius:8px;
+  padding:6px;
+}
+.qr svg{ width:100%; height:100%; }
+.pass-no{
+  margin:0;
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  font-weight:600;
+  color:var(--pass-blue-deep);
+  white-space:nowrap;
+}
+
+.declined-note{
+  padding-bottom:20px;
+  font-size:12.5px;
+  color:var(--slate);
+  line-height:1.5;
+}
+
+/* ---------- footer (approved pass) ---------- */
+.pass-footer{
+  background:#F4F7FB;
+  border-top:1px solid var(--line);
+  padding:14px 26px;
+  text-align:center;
+  font-size:12.5px;
+  font-weight:600;
+  color:var(--pass-blue);
+  line-height:1.5;
+}
+
+/* ---------- pending state actions ---------- */
+.pending-actions{
+  display:flex;
+  gap:10px;
+  padding:20px 26px 26px;
+}
+.pending-actions .btn{
+  flex:1;
+  font-family:'Inter', sans-serif;
+  font-size:13.5px;
+  font-weight:600;
+  padding:12px 0;
+  border-radius:10px;
+  cursor:pointer;
+  transition:filter 0.15s ease, transform 0.1s ease;
+}
+.pending-actions .btn:active{ transform:translateY(1px); }
+.pending-actions .btn:disabled{ opacity:0.6; cursor:not-allowed; }
+.pending-actions .btn.approve{
+  background:var(--verify);
+  border:1px solid var(--verify);
+  color:#fff;
+}
+.pending-actions .btn.approve:hover:not(:disabled){ filter:brightness(1.08); }
+.pending-actions .btn.reject{
+  background:transparent;
+  border:1px solid var(--line);
+  color:var(--ink);
+}
+.pending-actions .btn.reject:hover:not(:disabled){ background:#F4F7FB; }
+
+/* ---------- print action (approved pass) ---------- */
+.actions{
+  padding:16px 26px 24px;
+}
+.actions .btn{
+  width:100%;
+  font-family:'Inter', sans-serif;
+  font-size:13px;
+  font-weight:600;
+  padding:11px 0;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:transparent;
+  color:var(--ink);
+  cursor:pointer;
+}
+.actions .btn:hover{ background:#F4F7FB; }
+.actions .btn:focus-visible,
+.pending-actions .btn:focus-visible{
+  outline:2px solid var(--pass-blue);
+  outline-offset:2px;
+}
+
+@media print{
+  .modal-overlay{ background:#fff; padding:0; }
+  .actions{ display:none; }
+  .pass-card{ box-shadow:none; }
+}
+
+@media (max-width:420px){
+  .pass-header{ padding:18px 20px; }
+  .pass-body{ padding:18px 20px 4px; }
+  .pending-actions{ padding:18px 20px 22px; }
+  .actions{ padding:14px 20px 22px; }
+  .pass-footer{ padding:14px 20px; }
+  .pass-meta-row{ flex-direction:column; align-items:flex-start; }
+  .qr-block{ align-self:center; }
+}

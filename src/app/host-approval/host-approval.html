@@ -1,0 +1,488 @@
+<!-- Visitor detail modal -->
+@if (showModal) {
+
+    <!-- Action Loader -->
+@if (actionLoading) {
+  <div class="action-loader-overlay">
+
+    <div class="action-loader">
+
+      <div class="action-spinner"></div>
+
+      <div class="action-loader-title">
+        Please wait...
+      </div>
+
+      <div class="action-loader-message">
+        {{ actionLoadingMessage }}
+      </div>
+
+    </div>
+
+  </div>
+}
+    <div class="modal-backdrop" (click)="closeModal()">
+        <div class="approval-page" (click)="$event.stopPropagation()">
+
+            <!-- <div class="approval-header">
+                <div class="approval-brand">
+                    <span class="brand-icon">🛡️</span>
+                    <div>
+                        <div class="brand-title">VMS</div>
+                        <div class="brand-sub">Visitor Management System</div>
+                    </div>
+                </div>
+                <div class="approval-header-right">
+                    <span class="need-help">? Need Help?</span>
+                    <div class="host-chip">
+                        <div>
+                            <div class="host-chip-hi">Hi, {{ selectedMeeting.hostName || 'Host' }}</div>
+                            <div class="brand-sub">Reviewing request</div>
+                        </div>
+                        <div class="host-avatar">{{ (selectedMeeting.hostName || 'H').charAt(0) }}</div>
+                    </div>
+                    <span class="close-btn" (click)="closeModal()">&times;</span>
+                </div>
+            </div> -->
+
+            @if (loadingVisitor) {
+                <p class="loading-text" style="padding:24px;">Loading visitor details...</p>
+            }
+
+            @if (!loadingVisitor && selectedVisitor) {
+                <div class="approval-body" #detailsCard [class.approved-card]="isApproved">
+
+                    @if (isApproved) {
+                        <div class="watermark">APPROVED</div>
+                    }
+
+                    <div class="status-banner"
+                        [class.banner-pending]="selectedMeeting.acceptFlag === 'N'"
+                        [class.banner-approved]="selectedMeeting.acceptFlag === 'Y'"
+                        [class.banner-rejected]="selectedMeeting.acceptFlag === 'R'"
+                        [class.banner-hold]="selectedMeeting.acceptFlag === 'H'">
+                        <span class="banner-icon">✉️</span>
+                        <div>
+                            <div class="banner-title">{{ statusLabel(selectedMeeting.acceptFlag) === 'Pending' ? 'Approval Required' : statusLabel(selectedMeeting.acceptFlag) }}</div>
+                            <div class="banner-sub">Please review visitor details and take action</div>
+                        </div>
+                    </div>
+
+                    <h2 class="approval-title">Visitor Approval Request</h2>
+                    <p class="approval-subtitle">You have received a new visit request. Please review the details below.</p>
+
+                    <div class="detail-card">
+                        <div class="detail-card-title"><span class="dot dot-blue"></span> Visitor Details</div>
+                        <div class="visitor-row">
+                            <div class="photo-block">
+                                @if (visitorPhotoUrl) {
+                                    <img [src]="visitorPhotoUrl" crossorigin="anonymous" alt="Visitor photo" (error)="onPhotoError()">
+                                }
+                                @if (!visitorPhotoUrl) {
+                                    <div class="no-photo">No Photo</div>
+                                }
+                            </div>
+                            <div class="field-grid">
+                                <div>
+                                    <div class="field-label">Visitor Name</div>
+                                    <div class="field-value">{{ selectedVisitor.firstName }} {{ selectedVisitor.lastName }}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">Mobile Number</div>
+                                    <div class="field-value">{{ selectedVisitor.mobileNo }}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">Email ID</div>
+                                    <div class="field-value" [class.muted]="!selectedVisitor.email">{{ selectedVisitor.email || '—' }}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">Organisation</div>
+                                    <div class="field-value" [class.muted]="!selectedVisitor.organisation">{{ selectedVisitor.organisation || '—' }}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">State</div>
+                                    <div class="field-value">{{ selectedVisitor.state }}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">District</div>
+                                    <div class="field-value">{{ selectedVisitor.district }}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">Purpose of Visit</div>
+                                    <div class="field-value" [class.muted]="!selectedVisitor.purposeOfVisit">{{ selectedVisitor.purposeOfVisit || '—' }}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">Mode of Visit</div>
+                                    <div class="field-value" [class.muted]="!selectedVisitor.modeOfVisit">{{ selectedVisitor.modeOfVisit || '—' }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="two-col">
+                        <div class="detail-card">
+                            <div class="detail-card-title"><span class="dot dot-green"></span> Visit Details</div>
+                            <div class="kv-list">
+                                <div class="kv-row"><span>Date</span><b>{{ selectedMeeting.approvedMeetingDate || selectedMeeting.requestedMeetingDate }}</b></div>
+                                <div class="kv-row"><span>Time</span><b>{{ selectedMeeting.approvedMeetingTime || selectedMeeting.requestedMeetingTime }}</b></div>
+                                <!-- <div class="kv-row"><span>Address</span><b class="muted">{{ selectedVisitor.address || '—' }}</b></div> -->
+                                 <div class="kv-row"><span>Address</span><b [class.muted]="!selectedVisitor.address">{{ selectedVisitor.address || '—' }}</b></div>
+                                <div class="kv-row"><span>Status</span><b>{{ statusLabel(selectedMeeting.acceptFlag) }}</b></div>
+                            </div>
+                        </div>
+                        <div class="detail-card">
+                            <div class="detail-card-title"><span class="dot dot-orange"></span> Host Details</div>
+                            <div class="kv-list">
+                                <div class="kv-row"><span>Host Name</span><b>{{ selectedMeeting.hostName || '—' }}</b></div>
+                                <!-- <div class="kv-row"><span>Mobile</span><b class="muted">{{ selectedVisitor.mobileNo }}</b></div> -->
+                                 <div class="kv-row"><span>Mobile</span><b>{{ selectedVisitor.mobileNo }}</b></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (isPending && !showHoldForm) {
+                        <div class="note-banner">
+                            ⚠️ Please review the above visitor information carefully. Click on the action below to approve, hold or reject this visit request.
+                        </div>
+
+                        <div class="action-cards">
+                            <div class="action-card action-approve">
+                                <div class="action-icon">✅</div>
+                                <div class="action-title">Approve Visit</div>
+                                <div class="action-desc">Approve this visit request.</div>
+                                <button class="action-btn btn-approve" (click)="approve()">Approve</button>
+                            </div>
+                            <div class="action-card action-hold">
+                                <div class="action-icon">🕒</div>
+                                <div class="action-title">Hold / Reschedule</div>
+                                <div class="action-desc">Suggest another date & time.</div>
+                                <button class="action-btn btn-hold" (click)="openHoldForm()">Hold</button>
+                            </div>
+                            <div class="action-card action-reject">
+                                <div class="action-icon">❌</div>
+                                <div class="action-title">Reject Visit</div>
+                                <div class="action-desc">Decline this visit request.</div>
+                                <button class="action-btn btn-reject" (click)="reject()">Reject</button>
+                            </div>
+                        </div>
+                    }
+
+                    @if (isPending && showHoldForm) {
+                        <div class="detail-card hold-form-card">
+                            <div class="detail-card-title"><span class="dot dot-orange"></span> Reschedule Visit</div>
+                            <div class="hold-form-row">
+                                 <label>Rescheduled Date</label>
+                                <input type="date" [(ngModel)]="holdDate" name="holdDate" [attr.min]="minHoldDate">
+                            </div>
+                            <div class="hold-form-row">
+                                <label>Rescheduled Time</label>
+                                <input type="time" [(ngModel)]="holdTime" name="holdTime">
+                            </div>
+                            <div class="hold-form-actions">
+                                <button class="action-btn btn-approve" (click)="saveHold()">Save Hold</button>
+                                <button class="action-btn btn-reject" (click)="cancelHoldForm()">Cancel</button>
+                            </div>
+                        </div>
+                    }
+
+                    @if (!isPending && !isApproved) {
+                        <div class="note-banner">
+                            @if (selectedMeeting.acceptFlag === 'H') {
+                                🕒 This request has been put on hold with a new proposed date and time. No further action is available here.
+                            }
+                            @if (selectedMeeting.acceptFlag === 'R') {
+                                ❌ This visit request has been rejected.
+                            }
+                        </div>
+                    }
+
+                    @if (isApproved) {
+                        <div class="action-cards action-cards-2">
+                            <div class="action-card action-approve">
+                                <div class="action-title">Download PDF</div>
+                                <div class="action-desc">Save the approved visitor pass as a PDF.</div>
+                                <button class="action-btn btn-approve" [disabled]="generatingFile" (click)="downloadPdf()">Download PDF</button>
+                            </div>
+                            <div class="action-card action-hold">
+                                <div class="action-title">Download Visitor's Image</div>
+                                <div class="action-desc">Save the approved visitor pass as an image.</div>
+                                <button class="action-btn btn-hold" [disabled]="generatingFile" (click)="downloadImage()">Download Visitor's Image</button>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- <div class="secure-footer">
+                        🔒 This is a secure link. Do not share this link with others.<br>
+                        If you didn't expect this request, you can ignore this email.
+                    </div> -->
+                </div>
+            }
+
+            @if (!loadingVisitor && !selectedVisitor) {
+                <p class="loading-text" style="padding:24px;">Unable to load visitor details.</p>
+            }
+
+        </div>
+    </div>
+}
+<!-- 
+    <div class="page-header">
+        <h2>Host Approval Requests</h2>
+        <p>Review and approve visitor meeting requests.</p>
+    </div>
+
+    <div class="table-card">
+
+        <div class="table-header">
+            <h3>Meeting Requests</h3>
+            <input
+                type="text"
+                placeholder="Search by visitor, host, or mobile..."
+                [(ngModel)]="searchText"
+                (ngModelChange)="onSearch()"
+                name="searchText">
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Visitor</th>
+                    <th>Mobile</th>
+                    <th>Host</th>
+                    <th>Requested Date</th>
+                    <th>Requested Time</th>
+                    <th>Status</th>
+                    <th style="width:100px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @for (m of filteredMeetings; track m.meetingId) {
+
+                    <tr>
+                        <td>{{ m.visitorName || '-' }}</td>
+                        <td>{{ m.mobileNo }}</td>
+                        <td>{{ m.hostName || '-' }}</td>
+                        <td>{{ m.requestedMeetingDate }}</td>
+                        <td>{{ m.requestedMeetingTime }}</td>
+                        <td>
+                            <span
+                                [class.status-pending]="m.acceptFlag === 'N'"
+                                [class.status-approved]="m.acceptFlag === 'Y'"
+                                [class.status-rejected]="m.acceptFlag === 'R'"
+                                [class.status-hold]="m.acceptFlag === 'H'">
+                                {{ statusLabel(m.acceptFlag) }}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="view-btn" (click)="viewDetails(m)">View</button>
+                        </td>
+                    </tr>
+
+                }
+
+                @if (filteredMeetings.length === 0) {
+                    <tr>
+                        <td colspan="7" class="no-data">No Meeting Requests Found</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div> 
+
+@if (showModal) {
+    <div class="modal-backdrop" (click)="closeModal()">
+        <div class="approval-page" (click)="$event.stopPropagation()">
+
+            <div class="approval-header">
+                <div class="approval-brand">
+                    <span class="brand-icon">🛡️</span>
+                    <div>
+                        <div class="brand-title">VMS</div>
+                        <div class="brand-sub">Visitor Management System</div>
+                    </div>
+                </div>
+                <div class="approval-header-right">
+                    <span class="need-help">? Need Help?</span>
+                    <div class="host-chip">
+                        <div>
+                            <div class="host-chip-hi">Hi, {{ selectedMeeting.hostName || 'Host' }}</div>
+                            <div class="brand-sub">Reviewing request</div>
+                        </div>
+                        <div class="host-avatar">{{ (selectedMeeting.hostName || 'H').charAt(0) }}</div>
+                    </div>
+                    <span class="close-btn" (click)="closeModal()">&times;</span>
+                </div>
+            </div>
+
+            @if (loadingVisitor) {
+                <p class="loading-text" style="padding:24px;">Loading visitor details...</p>
+            }
+
+            @if (!loadingVisitor && selectedVisitor) {
+                <div class="approval-body" #detailsCard [class.approved-card]="isApproved">
+
+                    @if (isApproved) {
+                        <div class="watermark">APPROVED</div>
+                    }
+
+                    <div class="status-banner"
+                        [class.banner-pending]="selectedMeeting.acceptFlag === 'N'"
+                        [class.banner-approved]="selectedMeeting.acceptFlag === 'Y'"
+                        [class.banner-rejected]="selectedMeeting.acceptFlag === 'R'"
+                        [class.banner-hold]="selectedMeeting.acceptFlag === 'H'">
+                        <span class="banner-icon">✉️</span>
+                        <div>
+                            <div class="banner-title">{{ statusLabel(selectedMeeting.acceptFlag) === 'Pending' ? 'Approval Required' : statusLabel(selectedMeeting.acceptFlag) }}</div>
+                            <div class="banner-sub">Please review visitor details and take action</div>
+                        </div>
+                    </div>
+
+                    <h2 class="approval-title">Visitor Approval Request</h2>
+                    <p class="approval-subtitle">You have received a new visit request. Please review the details below.</p>
+
+                    <div class="detail-card">
+                        <div class="detail-card-title"><span class="dot dot-blue"></span> Visitor Details</div>
+                        <div class="visitor-row">
+                            <div class="photo-block">
+                                @if (visitorPhotoUrl) {
+                                    <img [src]="visitorPhotoUrl" crossorigin="anonymous" alt="Visitor photo" (error)="onPhotoError()">
+                                }
+                                @if (!visitorPhotoUrl) {
+                                    <div class="no-photo">No Photo</div>
+                                }
+                            </div>
+                            <div class="field-grid">
+                                <div>
+                                    <div class="field-label">Visitor Name</div>
+                                    <div class="field-value">{{ selectedVisitor.firstName }} {{ selectedVisitor.lastName }}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">Mobile Number</div>
+                                    <div class="field-value">{{ selectedVisitor.mobileNo }}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">Email ID</div>
+                                    <div class="field-value" [class.muted]="!selectedVisitor.email">{{ selectedVisitor.email || '—' }}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">Organisation</div>
+                                    <div class="field-value" [class.muted]="!selectedVisitor.organisation">{{ selectedVisitor.organisation || '—' }}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">State</div>
+                                    <div class="field-value">{{ selectedVisitor.state }}</div>
+                                </div>
+                                <div>
+                                    <div class="field-label">District</div>
+                                    <div class="field-value">{{ selectedVisitor.district }}</div>
+                                </div>
+                                <div>
+    <div class="field-label">Purpose of Visit</div>
+    <div class="field-value" [class.muted]="!selectedVisitor.purposeOfVisit">{{ selectedVisitor.purposeOfVisit || '—' }}</div>
+</div>
+<div>
+    <div class="field-label">Mode of Visit</div>
+    <div class="field-value" [class.muted]="!selectedVisitor.modeOfVisit">{{ selectedVisitor.modeOfVisit || '—' }}</div>
+</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="two-col">
+                        <div class="detail-card">
+                            <div class="detail-card-title"><span class="dot dot-green"></span> Visit Details</div>
+                            <div class="kv-list">
+                                <div class="kv-row"><span>Date</span><b>{{ selectedMeeting.approvedMeetingDate || selectedMeeting.requestedMeetingDate }}</b></div>
+                                <div class="kv-row"><span>Time</span><b>{{ selectedMeeting.approvedMeetingTime || selectedMeeting.requestedMeetingTime }}</b></div>
+                                <div class="kv-row"><span>Address</span><b class="muted">{{ selectedVisitor.address || '—' }}</b></div>
+                                <div class="kv-row"><span>Status</span><b>{{ statusLabel(selectedMeeting.acceptFlag) }}</b></div>
+                            </div>
+                        </div>
+                        <div class="detail-card">
+                            <div class="detail-card-title"><span class="dot dot-orange"></span> Host Details</div>
+                            <div class="kv-list">
+                                <div class="kv-row"><span>Host Name</span><b>{{ selectedMeeting.hostName || '—' }}</b></div>
+                                <div class="kv-row"><span>Mobile</span><b class="muted">{{ selectedVisitor.mobileNo }}</b></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (!isApproved && !showHoldForm) {
+                        <div class="note-banner">
+                            ⚠️ Please review the above visitor information carefully. Click on the action below to approve, hold or reject this visit request.
+                        </div>
+
+                        <div class="action-cards">
+                            <div class="action-card action-approve">
+                                <div class="action-icon">✅</div>
+                                <div class="action-title">Approve Visit</div>
+                                <div class="action-desc">Approve this visit request.</div>
+                                <button class="action-btn btn-approve" (click)="approve()">Approve</button>
+                            </div>
+                            <div class="action-card action-hold">
+                                <div class="action-icon">🕒</div>
+                                <div class="action-title">Hold / Reschedule</div>
+                                <div class="action-desc">Suggest another date & time.</div>
+                                <button class="action-btn btn-hold" (click)="openHoldForm()">Hold</button>
+                            </div>
+                            <div class="action-card action-reject">
+                                <div class="action-icon">❌</div>
+                                <div class="action-title">Reject Visit</div>
+                                <div class="action-desc">Decline this visit request.</div>
+                                <button class="action-btn btn-reject" (click)="reject()">Reject</button>
+                            </div>
+                        </div>
+                    }
+
+                    @if (!isApproved && showHoldForm) {
+                        <div class="detail-card hold-form-card">
+                            <div class="detail-card-title"><span class="dot dot-orange"></span> Reschedule Visit</div>
+                            <div class="hold-form-row">
+                                <label>New Date</label>
+                                <input type="date" [(ngModel)]="holdDate" name="holdDate">
+                            </div>
+                            <div class="hold-form-row">
+                                <label>New Time</label>
+                                <input type="time" [(ngModel)]="holdTime" name="holdTime">
+                            </div>
+                            <div class="hold-form-actions">
+                                <button class="action-btn btn-approve" (click)="saveHold()">Save Hold</button>
+                                <button class="action-btn btn-reject" (click)="cancelHoldForm()">Cancel</button>
+                            </div>
+                        </div>
+                    }
+
+                    @if (isApproved) {
+                        <div class="action-cards action-cards-2">
+                            <div class="action-card action-approve">
+                                <div class="action-title">Download PDF</div>
+                                <div class="action-desc">Save the approved visitor pass as a PDF.</div>
+                                <button class="action-btn btn-approve" [disabled]="generatingFile" (click)="downloadPdf()">Download PDF</button>
+                            </div>
+                            <div class="action-card action-hold">
+                                <div class="action-title">Download Image</div>
+                                <div class="action-desc">Save the approved visitor pass as an image.</div>
+                                <button class="action-btn btn-hold" [disabled]="generatingFile" (click)="downloadImage()">Download Image</button>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="secure-footer">
+                        🔒 This is a secure link. Do not share this link with others.<br>
+                        If you didn't expect this request, you can ignore this email.
+                    </div>
+                </div>
+            }
+
+            @if (!loadingVisitor && !selectedVisitor) {
+                <p class="loading-text" style="padding:24px;">Unable to load visitor details.</p>
+            }
+
+        </div>
+    </div>
+} -->

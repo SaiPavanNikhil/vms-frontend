@@ -1,0 +1,316 @@
+
+<div class="visitor-pass-page">
+
+  <!-- =====================================================
+       LOADING
+  ====================================================== -->
+
+  <div
+    class="loading-container"
+    *ngIf="loading">
+
+    <div class="loader"></div>
+
+    <p>
+      Loading visitor pass...
+    </p>
+
+  </div>
+
+
+  <!-- =====================================================
+       ERROR
+  ====================================================== -->
+
+  <div
+    class="error-container"
+    *ngIf="!loading && errorMessage">
+
+    <div class="error-icon">
+      !
+    </div>
+
+    <h2>
+      Visitor Pass Unavailable
+    </h2>
+
+    <p>
+      {{ errorMessage }}
+    </p>
+
+  </div>
+
+
+  <!-- =====================================================
+       VISITOR PASS
+  ====================================================== -->
+
+  <div
+    class="visitor-pass"
+    *ngIf="!loading && passData">
+
+
+    <!-- ===================================================
+         PASS HEADER
+    ==================================================== -->
+
+    <div class="pass-header">
+
+      <div class="header-building-icon">
+
+        <span class="building building-one">
+          ▮
+        </span>
+
+        <span class="building building-two">
+          ▮
+        </span>
+
+        <span class="building building-three">
+          ▮
+        </span>
+
+      </div>
+
+
+      <div class="header-content">
+
+        <h1>
+          VISITOR PASS
+        </h1>
+
+        <p>
+          XYZ INFOTECH PVT. LTD.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         PASS BODY
+    ==================================================== -->
+
+    <div class="pass-body">
+
+
+      <!-- ===============================================
+           VISITOR PHOTO
+      ================================================ -->
+
+      <div class="photo-container">
+
+        <img
+        [src]="getPhotoUrl(passData.mobileNo)"
+        alt="Visitor Photo"
+        (error)="onImageError($event)"
+        />
+
+      </div>
+
+
+      <!-- ===============================================
+           VISITOR DETAILS
+      ================================================ -->
+
+      <div class="visitor-details">
+
+
+        <!-- Visitor Name -->
+
+        <div class="detail-row">
+
+          <span class="detail-label">
+            Visitor Name
+          </span>
+
+          <span class="detail-separator">
+            :
+          </span>
+
+          <span class="detail-value">
+            {{ passData.visitorName }}
+          </span>
+
+        </div>
+
+
+        <!-- Company -->
+
+        <div class="detail-row">
+
+          <span class="detail-label">
+            Company
+          </span>
+
+          <span class="detail-separator">
+            :
+          </span>
+
+          <span class="detail-value">
+            {{ passData.company || '-' }}
+          </span>
+
+        </div>
+
+
+        <!-- Purpose -->
+
+        <div class="detail-row">
+
+          <span class="detail-label">
+            Purpose
+          </span>
+
+          <span class="detail-separator">
+            :
+          </span>
+
+          <span class="detail-value">
+            {{ passData.purpose || '-' }}
+          </span>
+
+        </div>
+
+
+        <!-- Contact -->
+
+        <div class="detail-row">
+
+          <span class="detail-label">
+            Contact No.
+          </span>
+
+          <span class="detail-separator">
+            :
+          </span>
+
+          <span class="detail-value">
+            {{ passData.mobileNo }}
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         DIVIDER
+    ==================================================== -->
+
+    <div class="pass-divider"></div>
+
+
+    <!-- ===================================================
+         VISIT INFORMATION
+    ==================================================== -->
+
+    <div class="visit-information">
+
+
+      <!-- Visit Date -->
+
+      <div class="visit-row">
+
+        <div class="visit-icon">
+          📅
+        </div>
+
+        <span class="visit-label">
+          Visit Date
+        </span>
+
+        <span class="visit-separator">
+          :
+        </span>
+
+        <span class="visit-value">
+          {{ formatDate(passData.visitDate) }}
+        </span>
+
+      </div>
+
+
+      <!-- Host -->
+
+      <div class="visit-row">
+
+        <div class="visit-icon">
+          👤
+        </div>
+
+        <span class="visit-label">
+          Host / Employee
+        </span>
+
+        <span class="visit-separator">
+          :
+        </span>
+
+        <div class="host-value">
+
+          <strong>
+            {{ passData.hostName }}
+          </strong>
+
+          <small
+            *ngIf="passData.hostDesignation">
+
+            ({{ passData.hostDesignation }})
+
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- Pass Number -->
+
+      <div class="visit-row">
+
+        <div class="visit-icon pass-icon">
+          #
+        </div>
+
+        <span class="visit-label">
+          Pass No.
+        </span>
+
+        <span class="visit-separator">
+          :
+        </span>
+
+        <strong class="pass-number">
+          {{ passData.passNo }}
+        </strong>
+
+      </div>
+
+
+    </div>
+
+
+    <!-- ===================================================
+         FOOTER
+    ==================================================== -->
+
+    <div class="pass-footer">
+
+      <p>
+        Please show this pass at the security desk
+      </p>
+
+      <p>
+        Thank You!
+      </p>
+
+    </div>
+
+
+  </div>
+
+</div>

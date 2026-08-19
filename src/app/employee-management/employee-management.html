@@ -1,0 +1,283 @@
+<div class="section-container">
+
+    <!-- Page Header -->
+    <div class="page-header">
+
+        <h2>Employee Management</h2>
+
+        <p>Create and manage organization employees.</p>
+
+    </div>
+
+    <!-- =====================================
+                EMPLOYEE FORM
+    ====================================== -->
+
+    <div class="form-card">
+
+        <h3>{{ isEditMode ? 'Update Employee' : 'Add New Employee' }}</h3>
+
+        <div class="form-grid">
+
+            <!-- First Name -->
+            <div class="form-group">
+
+                <label>First Name <span>*</span></label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="employeeForm.firstName"
+                    name="firstName"
+                    placeholder="Enter First Name">
+
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+
+                <label>Last Name</label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="employeeForm.lastName"
+                    name="lastName"
+                    placeholder="Enter Last Name">
+
+            </div>
+
+            <!-- Designation -->
+            <div class="form-group">
+
+                <label>Designation</label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="employeeForm.designation"
+                    name="designation"
+                    placeholder="Enter Designation">
+
+            </div>
+
+            <!-- Section -->
+            <div class="form-group">
+
+                <label>Section <span>*</span></label>
+
+                <select
+                    [(ngModel)]="employeeForm.sectionId"
+                    name="sectionId">
+
+                    <option value="">-- Select Section --</option>
+
+                    @for (section of sections; track section.sectionId) {
+
+                        <option [value]="section.sectionId">
+
+                            {{ section.sectionName }}
+
+                        </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+            <!-- Mobile -->
+            <div class="form-group">
+
+                <label>Mobile Number</label>
+
+                <input
+                    type="text"
+                    maxlength="10"
+                    [(ngModel)]="employeeForm.mobileNo"
+                    name="mobileNo"
+                    placeholder="Enter Mobile Number">
+
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+
+                <label>Email ID</label>
+
+                <input
+                    type="email"
+                    [(ngModel)]="employeeForm.emailId"
+                    name="emailId"
+                    placeholder="Enter Email">
+
+            </div>
+
+            <div class="form-group">
+
+            <label>
+                {{ isEditMode ? 'New Password' : 'Password' }}
+
+                @if (!isEditMode) {
+                    <span>*</span>
+                }
+            </label>
+
+            <input
+                type="password"
+                [(ngModel)]="employeeForm.password"
+                name="password"
+                [placeholder]="isEditMode ? 'Leave blank to keep existing password' : 'Enter Password'">
+
+            </div>
+        </div>
+
+        <!-- Buttons -->
+
+        <div class="button-group">
+
+            @if (!isEditMode) {
+
+                <button
+                    class="save-btn"
+                    (click)="saveEmployee()">
+
+                    Save
+
+                </button>
+
+            }
+
+            @if (isEditMode) {
+
+                <button
+                    class="update-btn"
+                    (click)="updateEmployee()">
+
+                    Update
+
+                </button>
+
+            }
+
+            <button
+                class="clear-btn"
+                (click)="clearForm()">
+
+                {{ isEditMode ? 'Cancel' : 'Clear' }}
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================
+                EMPLOYEE LIST
+    ====================================== -->
+
+    <div class="table-card">
+
+        <div class="table-header">
+
+            <h3>Employee List</h3>
+
+            <input
+                type="text"
+                [(ngModel)]="searchText"
+                (ngModelChange)="onSearch()"
+                placeholder="Search Employee...">
+
+        </div>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Employee ID</th>
+
+                    <th>Name</th>
+
+                    <th>Designation</th>
+
+                    <th>Section</th>
+
+                    <th>Mobile</th>
+
+                    <th>Email</th>
+
+                    <th style="width:150px;">Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @for (employee of filteredEmployeeList; track employee.employeeId) {
+
+                    <tr>
+
+                        <td>{{ employee.employeeId }}</td>
+
+                        <td>
+
+                            {{ employee.firstName }}
+                            {{ employee.lastName }}
+
+                        </td>
+
+                        <td>{{ employee.designation }}</td>
+
+                        <td>{{ employee.sectionName }}</td>
+
+                        <td>{{ employee.mobileNo }}</td>
+
+                        <td>{{ employee.emailId }}</td>
+
+                        <td>
+
+                            <button
+                                class="edit-btn"
+                                (click)="editEmployee(employee)">
+
+                                Edit
+
+                            </button>
+
+                            <button
+                                class="delete-btn"
+                                (click)="deleteEmployee(employee.employeeId)">
+
+                                Delete
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                }
+
+                @if (filteredEmployeeList.length === 0) {
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="no-data">
+
+                            No Employees Found
+
+                        </td>
+
+                    </tr>
+
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

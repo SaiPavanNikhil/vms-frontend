@@ -1,0 +1,156 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Dashboard Layout */
+.dashboard-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f4f6f9;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+  height: 65px;
+  background: #1e3a8a;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+  z-index: 1000;
+}
+
+.logo-section h2 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.welcome-text {
+  font-size: 15px;
+}
+
+.logout-btn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  background: white;
+  color: #1e3a8a;
+  cursor: pointer;
+  font-weight: 600;
+  transition: .3s;
+}
+
+.logout-btn:hover {
+  background: #dbeafe;
+}
+
+/* =========================
+   BODY
+========================= */
+
+.dashboard-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+  width: 250px;
+  background: #263238;
+  color: white;
+  overflow-y: auto;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 20px 0;
+}
+
+.sidebar li {
+  margin-bottom: 5px;
+}
+
+.sidebar a {
+  display: block;
+  padding: 14px 24px;
+  color: white;
+  text-decoration: none;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+.sidebar a:hover {
+  background: #37474f;
+}
+
+.sidebar a.active {
+  background: #1976d2;
+  font-weight: 600;
+  border-left: 5px solid #ffffff;
+}
+
+/* =========================
+   CONTENT
+========================= */
+
+.content {
+  flex: 1;
+  padding: 25px;
+  overflow-y: auto;
+  background: #f5f7fa;
+}
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+.content::-webkit-scrollbar,
+.sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.content::-webkit-scrollbar-thumb,
+.sidebar::-webkit-scrollbar-thumb {
+  background: #b0b0b0;
+  border-radius: 10px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+
+  .sidebar {
+    width: 210px;
+  }
+
+  .logo-section h2 {
+    font-size: 20px;
+  }
+
+  .welcome-text {
+    display: none;
+  }
+
+}

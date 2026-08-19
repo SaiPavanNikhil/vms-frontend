@@ -1,0 +1,345 @@
+<div class="section-container">
+
+    <!-- Page Header -->
+    <div class="page-header">
+
+        <h2>Visitor List</h2>
+
+        <p>View all visitor entries.</p>
+
+    </div>
+
+
+    <!-- ==========================
+            VISITOR LIST
+    =========================== -->
+
+    <div class="table-card">
+
+        <!-- TABLE HEADER -->
+
+        <div class="table-header">
+
+            <h3>Visitor List</h3>
+
+            <input
+                type="text"
+                placeholder="Search Visitor..."
+                [(ngModel)]="searchText"
+                (ngModelChange)="onSearch()">
+
+        </div>
+
+
+        <!-- ==========================
+                FILTERS
+        =========================== -->
+
+        <div class="filter-container">
+
+            <!-- State -->
+            <div class="filter-group">
+
+                <label>State</label>
+
+                <select
+                    [(ngModel)]="selectedState"
+                    (ngModelChange)="onStateChange()"
+                    name="stateFilter">
+
+                    <option value="">
+                        All States
+                    </option>
+
+                    @for (state of states; track state) {
+
+                        <option [value]="state">
+                            {{ state }}
+                        </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <!-- District -->
+            <div class="filter-group">
+
+                <label>District</label>
+
+                <select
+                    [(ngModel)]="selectedDistrict"
+                    (ngModelChange)="onFilterChange()"
+                    name="districtFilter">
+
+                    <option value="">
+                        All Districts
+                    </option>
+
+                    @for (district of districts; track district) {
+
+                        <option [value]="district">
+                            {{ district }}
+                        </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <!-- Organisation -->
+            <div class="filter-group">
+
+                <label>Organisation</label>
+
+                <select
+                    [(ngModel)]="selectedOrganisation"
+                    (ngModelChange)="onFilterChange()"
+                    name="organisationFilter">
+
+                    <option value="">
+                        All Organisations
+                    </option>
+
+                    @for (organisation of organisations; track organisation) {
+
+                        <option [value]="organisation">
+                            {{ organisation }}
+                        </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <!-- Clear Filters -->
+            <div class="filter-group filter-button-group">
+
+                <button
+                    type="button"
+                    class="clear-filter-btn"
+                    (click)="clearFilters()">
+
+                    Clear Filters
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==========================
+                TABLE
+        =========================== -->
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Mobile No</th>
+
+                    <th>First Name</th>
+
+                    <th>Last Name</th>
+
+                    <th>Organisation</th>
+
+                    <th>Email</th>
+
+                    <th>District</th>
+
+                    <th>State</th>
+
+                    <th>Registration Date</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                @for (visitor of paginatedVisitors; track visitor.mobileNo) {
+
+                    <tr>
+
+                        <td>
+                            {{ visitor.mobileNo }}
+                        </td>
+
+                        <td>
+                            {{ visitor.firstName }}
+                        </td>
+
+                        <td>
+                            {{ visitor.lastName }}
+                        </td>
+
+                        <td>
+                            {{ visitor.organisation || '-' }}
+                        </td>
+
+                        <td>
+                            {{ visitor.email || '-' }}
+                        </td>
+
+                        <td>
+                            {{ visitor.district }}
+                        </td>
+
+                        <td>
+                            {{ visitor.state }}
+                        </td>
+
+                        <td>
+                            {{ visitor.registrationDate }}
+                        </td>
+
+                    </tr>
+
+                }
+
+
+                @if (filteredVisitors.length === 0) {
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="no-data">
+
+                            No Visitors Found
+
+                        </td>
+
+                    </tr>
+
+                }
+
+            </tbody>
+
+        </table>
+
+
+        <!-- ==========================
+                PAGINATION
+        =========================== -->
+
+        @if (filteredVisitors.length > 0) {
+
+            <div class="pagination-container">
+
+                <!-- Showing -->
+                <div class="pagination-info">
+
+                    Showing
+                    <strong>
+                        {{ startIndex + 1 }}
+                    </strong>
+
+                    -
+                    <strong>
+                        {{ endIndex }}
+                    </strong>
+
+                    of
+                    <strong>
+                        {{ filteredVisitors.length }}
+                    </strong>
+
+                    visitors
+
+                </div>
+
+
+                <!-- Pagination Controls -->
+                <div class="pagination-controls">
+
+                    <!-- Previous -->
+                    <button
+                        type="button"
+                        class="page-btn"
+                        [disabled]="currentPage === 1"
+                        (click)="previousPage()">
+
+                        ‹ Previous
+
+                    </button>
+
+
+                    <!-- Page Numbers -->
+                    @for (page of pages; track page) {
+
+                        <button
+                            type="button"
+                            class="page-number"
+                            [class.active]="currentPage === page"
+                            (click)="goToPage(page)">
+
+                            {{ page }}
+
+                        </button>
+
+                    }
+
+
+                    <!-- Next -->
+                    <button
+                        type="button"
+                        class="page-btn"
+                        [disabled]="currentPage === totalPages"
+                        (click)="nextPage()">
+
+                        Next ›
+
+                    </button>
+
+                </div>
+
+
+                <!-- Page Size -->
+                <div class="page-size">
+
+                    <label>Rows:</label>
+
+                    <select
+                        [(ngModel)]="pageSize"
+                        (ngModelChange)="onPageSizeChange()"
+                        name="pageSize">
+
+                        <option [ngValue]="10">
+                            10
+                        </option>
+
+                        <option [ngValue]="25">
+                            25
+                        </option>
+
+                        <option [ngValue]="50">
+                            50
+                        </option>
+
+                        <option [ngValue]="100">
+                            100
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        }
+
+    </div>
+
+</div>

@@ -1,0 +1,134 @@
+<div class="login-page">
+
+  <div class="login-container">
+
+    <!-- Left Branding Section -->
+    <div class="branding-section">
+
+      <div class="brand-content">
+
+        <div class="logo-box">
+          VMS
+        </div>
+
+        <h1>Visitor Management System</h1>
+
+        <p>
+          Secure employee access to the Visitor Management System.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- Login Section -->
+    <div class="login-section">
+
+      <div class="login-card">
+
+        <div class="login-header">
+
+          <h2>Employee Login</h2>
+
+          <p>
+            Sign in to continue to your dashboard
+          </p>
+
+        </div>
+
+
+        <form (ngSubmit)="login()">
+
+          <!-- Email -->
+          <div class="form-group">
+
+            <label for="email">
+              Email Address
+            </label>
+
+            <div class="input-wrapper">
+
+              <!-- <span class="input-icon">
+                ✉
+              </span> -->
+
+              <input
+                id="email"
+                type="email"
+                name="email"
+                [(ngModel)]="email"
+                placeholder="Enter your email"
+                autocomplete="email"
+                required
+              />
+
+            </div>
+
+          </div>
+
+
+          <!-- Password -->
+          <div class="form-group">
+
+            <label for="password">
+              Password
+            </label>
+
+            <div class="input-wrapper">
+
+              <!-- <span class="input-icon">
+                🔒
+              </span> -->
+
+              <input
+                id="password"
+                [type]="showPassword ? 'text' : 'password'"
+                name="password"
+                [(ngModel)]="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                required
+              />
+
+              <!-- Password visibility -->
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="togglePassword()"
+                [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+
+                {{ showPassword ? '🔓' : '🔒' }}
+
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <!-- Login Button -->
+          <button
+            type="submit"
+            class="login-button">
+
+            Login
+
+          </button>
+
+        </form>
+
+
+        <div class="login-footer">
+
+          <span>VMS Employee Portal</span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

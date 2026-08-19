@@ -1,0 +1,279 @@
+<div class="dashboard-container">
+
+  <!-- =========================================
+       SIDEBAR
+  ========================================== -->
+
+  <aside class="sidebar">
+
+    <!-- Logo -->
+    <div class="sidebar-logo">
+
+      <div class="logo-box">
+        VMS
+      </div>
+
+      <div class="logo-text">
+
+        <h2>VMS</h2>
+
+        <span>
+          Visitor Management
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+
+      <!-- Dashboard -->
+
+      <a
+        class="nav-item"
+        routerLink="/employee-dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }">
+
+        <span class="nav-icon">
+          ⌂
+        </span>
+
+        <span>
+          Dashboard
+        </span>
+
+      </a>
+
+
+      <!-- Schedule Meeting -->
+
+      <a
+        class="nav-item"
+        routerLink="/employee-dashboard/meeting"
+        routerLinkActive="active">
+
+        <span class="nav-icon">
+          📅
+        </span>
+
+        <span>
+          Schedule Meeting
+        </span>
+
+      </a>
+
+
+      <!-- Visitors -->
+
+      <a
+        class="nav-item"
+        routerLink="/employee-dashboard/visitors"
+        routerLinkActive="active">
+
+        <span class="nav-icon">
+          👥
+        </span>
+
+        <span>
+          Visitors
+        </span>
+
+      </a>
+
+
+      <!-- Appointments -->
+
+      <a
+        class="nav-item"
+        routerLink="/employee-dashboard/appointments"
+        routerLinkActive="active">
+
+        <span class="nav-icon">
+          📋
+        </span>
+
+        <span>
+          Appointments
+        </span>
+
+      </a>
+
+
+      <!-- Visitor Passes -->
+
+      <a
+        class="nav-item"
+        routerLink="/employee-dashboard/passes"
+        routerLinkActive="active">
+
+        <span class="nav-icon">
+          🪪
+        </span>
+
+        <span>
+          Visitor Passes
+        </span>
+
+      </a>
+
+
+      <!-- Reports -->
+
+      <a
+        class="nav-item"
+        routerLink="/employee-dashboard/reports"
+        routerLinkActive="active">
+
+        <span class="nav-icon">
+          📊
+        </span>
+
+        <span>
+          Reports
+        </span>
+
+      </a>
+
+    </nav>
+
+
+    <!-- =========================================
+         SIDEBAR USER
+    ========================================== -->
+
+    <div class="sidebar-bottom">
+
+      <div class="sidebar-user">
+
+        <div class="user-avatar">
+
+          {{ employeeName.charAt(0).toUpperCase() }}
+
+        </div>
+
+        <div class="user-details">
+
+          <strong>
+            {{ employeeName }}
+          </strong>
+
+          <span>
+            Employee
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- Logout -->
+
+      <button
+        type="button"
+        class="logout-button"
+        (click)="logout()">
+
+        <span>
+          ↪
+        </span>
+
+        Logout
+
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <!-- =========================================
+       MAIN CONTENT
+  ========================================== -->
+
+  <div class="main-content">
+
+
+    <!-- =======================================
+         HEADER
+    ======================================== -->
+
+    <header class="top-header">
+
+      <div class="header-left">
+
+        <h1>
+          VMS Dashboard
+        </h1>
+
+        <p>
+          Welcome back, {{ employeeName }}
+        </p>
+
+      </div>
+
+
+      <!-- Header Right -->
+
+      <div class="header-right">
+
+
+        <!-- Notification -->
+
+        <button
+          type="button"
+          class="notification-button">
+
+          🔔
+
+          <span class="notification-dot"></span>
+
+        </button>
+
+
+        <!-- Employee -->
+
+        <div class="header-user">
+
+          <div class="header-avatar">
+
+            {{ employeeName.charAt(0).toUpperCase() }}
+
+          </div>
+
+
+          <div>
+
+            <strong>
+              {{ employeeName }}
+            </strong>
+
+            <span>
+              Employee
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <!-- =======================================
+         CHILD CONTENT
+         
+         EmployeeDashboardHome
+         EmployeeMeeting
+         Future modules
+    ======================================== -->
+
+    <router-outlet></router-outlet>
+
+
+  </div>
+
+</div>

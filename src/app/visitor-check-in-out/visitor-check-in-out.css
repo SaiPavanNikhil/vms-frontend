@@ -1,0 +1,783 @@
+* {
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.visitor-checkin-page {
+  min-height: 100vh;
+  width: 100%;
+  background: #f4f7fb;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  padding: 50px 20px;
+}
+
+
+/* =========================================================
+   MAIN CARD
+========================================================= */
+
+.checkin-card {
+  width: 100%;
+  max-width: 850px;
+
+  background: #ffffff;
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 10px 35px rgba(0, 0, 0, 0.08);
+
+  padding: 38px;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.page-header {
+  text-align: center;
+
+  margin-bottom: 35px;
+}
+
+.header-icon {
+  width: 58px;
+  height: 58px;
+
+  margin: 0 auto 15px;
+
+  border-radius: 50%;
+
+  background: #e9f8ef;
+  color: #1f9d55;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 27px;
+  font-weight: 700;
+}
+
+.page-header h1 {
+  margin: 0;
+
+  font-size: 28px;
+  font-weight: 700;
+
+  color: #1f2937;
+}
+
+.page-header p {
+  margin: 8px 0 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   MOBILE SECTION
+========================================================= */
+
+.mobile-section {
+  margin-bottom: 28px;
+}
+
+.mobile-section label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #374151;
+}
+
+
+/* =========================================================
+   MOBILE INPUT
+========================================================= */
+
+.mobile-input-wrapper {
+  width: 100%;
+}
+
+.mobile-input-wrapper input {
+  width: 100%;
+
+  height: 52px;
+
+  padding: 0 16px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  color: #111827;
+
+  font-size: 16px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.mobile-input-wrapper input::placeholder {
+  color: #9ca3af;
+}
+
+.mobile-input-wrapper input:focus {
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.input-hint {
+  display: block;
+
+  margin-top: 7px;
+
+  color: #6b7280;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading-section {
+  text-align: center;
+
+  padding: 25px 20px;
+
+  margin-bottom: 25px;
+
+  background: #f8fafc;
+
+  border-radius: 12px;
+}
+
+.loader {
+  width: 32px;
+  height: 32px;
+
+  margin: 0 auto 12px;
+
+  border: 3px solid #e5e7eb;
+  border-top-color: #2563eb;
+
+  border-radius: 50%;
+
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-section p {
+  margin: 0;
+
+  font-size: 14px;
+
+  color: #6b7280;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   ERROR MESSAGE
+========================================================= */
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 14px 16px;
+
+  margin-bottom: 25px;
+
+  border-radius: 10px;
+
+  background: #fef2f2;
+
+  border: 1px solid #fecaca;
+
+  color: #b91c1c;
+
+  font-size: 14px;
+}
+
+.error-icon {
+  width: 25px;
+  height: 25px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #dc2626;
+  color: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   DETAILS CONTAINER
+========================================================= */
+
+.details-container {
+  margin-top: 10px;
+}
+
+
+/* =========================================================
+   DETAILS SECTION
+========================================================= */
+
+.details-section {
+  margin-bottom: 24px;
+
+  padding: 22px;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 14px;
+
+  background: #ffffff;
+}
+
+
+/* =========================================================
+   SECTION HEADING
+========================================================= */
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-bottom: 20px;
+
+  padding-bottom: 13px;
+
+  border-bottom: 1px solid #eef0f3;
+}
+
+.section-icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+
+  background: #eff6ff;
+
+  font-size: 17px;
+}
+
+.section-heading h3 {
+  margin: 0;
+
+  font-size: 17px;
+  font-weight: 650;
+
+  color: #1f2937;
+}
+
+
+/* =========================================================
+   DETAILS GRID
+========================================================= */
+
+.details-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 18px 25px;
+}
+
+
+/* =========================================================
+   DETAIL ITEM
+========================================================= */
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+
+  min-width: 0;
+}
+
+.detail-label {
+  font-size: 12px;
+  font-weight: 500;
+
+  color: #6b7280;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.4px;
+}
+
+.detail-value {
+  font-size: 15px;
+  font-weight: 600;
+
+  color: #111827;
+
+  word-break: break-word;
+}
+
+
+/* =========================================================
+   MEETING STATUS
+========================================================= */
+
+.meeting-status {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  padding: 16px 18px;
+
+  margin-bottom: 22px;
+
+  border-radius: 12px;
+}
+
+.meeting-status.accepted {
+  background: #ecfdf5;
+
+  border: 1px solid #bbf7d0;
+
+  color: #166534;
+}
+
+.status-icon {
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #22c55e;
+
+  color: #ffffff;
+
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.meeting-status strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  font-size: 14px;
+}
+
+.meeting-status span:not(.status-icon) {
+  display: block;
+
+  font-size: 13px;
+
+  color: #15803d;
+}
+
+
+/* =========================================================
+   VISIT STATUS
+========================================================= */
+
+.visit-status {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 15px;
+
+  margin-bottom: 22px;
+}
+
+.visit-time {
+  padding: 16px;
+
+  border-radius: 11px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e5e7eb;
+
+  text-align: center;
+}
+
+.time-label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  font-size: 12px;
+  font-weight: 500;
+
+  color: #6b7280;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.4px;
+}
+
+.visit-time strong {
+  display: block;
+
+  font-size: 15px;
+
+  color: #111827;
+}
+
+
+/* =========================================================
+   ACTION BUTTON
+========================================================= */
+
+.action-btn {
+  width: 100%;
+
+  height: 52px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  font-size: 15px;
+
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* =========================================================
+   CHECK IN BUTTON
+========================================================= */
+
+.check-in-btn {
+  background: #16a34a;
+
+  color: #ffffff;
+
+  box-shadow:
+    0 5px 14px rgba(22, 163, 74, 0.2);
+}
+
+.check-in-btn:hover:not(:disabled) {
+  background: #15803d;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 7px 18px rgba(22, 163, 74, 0.25);
+}
+
+
+/* =========================================================
+   CHECK OUT BUTTON
+========================================================= */
+
+.check-out-btn {
+  background: #2563eb;
+
+  color: #ffffff;
+
+  box-shadow:
+    0 5px 14px rgba(37, 99, 235, 0.2);
+}
+
+.check-out-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 7px 18px rgba(37, 99, 235, 0.25);
+}
+
+
+/* =========================================================
+   BUTTON DISABLED
+========================================================= */
+
+.action-btn:disabled {
+  opacity: 0.65;
+
+  cursor: not-allowed;
+
+  transform: none;
+}
+
+
+/* =========================================================
+   COMPLETED SECTION
+========================================================= */
+
+.completed-section {
+  text-align: center;
+
+  padding: 28px 20px;
+
+  border-radius: 14px;
+
+  background: #f8fafc;
+
+  border: 1px solid #e5e7eb;
+}
+
+.completed-icon {
+  width: 52px;
+  height: 52px;
+
+  margin: 0 auto 13px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #dcfce7;
+
+  color: #16a34a;
+
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.completed-section h3 {
+  margin: 0 0 7px;
+
+  font-size: 18px;
+
+  color: #1f2937;
+}
+
+.completed-section p {
+  margin: 0;
+
+  font-size: 14px;
+
+  color: #6b7280;
+}
+
+
+/* =========================================================
+   SUCCESS MESSAGE
+========================================================= */
+
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-top: 20px;
+
+  padding: 14px 16px;
+
+  border-radius: 10px;
+
+  background: #ecfdf5;
+
+  border: 1px solid #bbf7d0;
+
+  color: #166534;
+
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.success-icon {
+  width: 25px;
+  height: 25px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #22c55e;
+
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.page-footer {
+  margin-top: 30px;
+
+  padding-top: 20px;
+
+  border-top: 1px solid #eef0f3;
+
+  text-align: center;
+
+  color: #9ca3af;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .visitor-checkin-page {
+    padding: 30px 15px;
+  }
+
+  .checkin-card {
+    padding: 28px 22px;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+  .visitor-checkin-page {
+    padding: 15px 10px;
+
+    align-items: flex-start;
+  }
+
+  .checkin-card {
+    padding: 24px 16px;
+
+    border-radius: 14px;
+  }
+
+  .page-header {
+    margin-bottom: 28px;
+  }
+
+  .header-icon {
+    width: 50px;
+    height: 50px;
+
+    font-size: 23px;
+  }
+
+  .page-header h1 {
+    font-size: 23px;
+  }
+
+  .page-header p {
+    font-size: 13px;
+  }
+
+  .details-section {
+    padding: 17px;
+  }
+
+  .section-heading {
+    margin-bottom: 16px;
+  }
+
+  .section-heading h3 {
+    font-size: 15px;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+
+    gap: 15px;
+  }
+
+  .visit-status {
+    grid-template-columns: 1fr;
+  }
+
+  .action-btn {
+    height: 50px;
+  }
+
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+.action-btn:focus-visible,
+.mobile-input-wrapper input:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.25);
+
+  outline-offset: 2px;
+}

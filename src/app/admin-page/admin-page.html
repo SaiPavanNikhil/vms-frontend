@@ -1,0 +1,60 @@
+<header class="header">
+  <h1>Admin dashboard</h1>
+</header>
+
+<main class="container">
+  <section class="stats">
+    <div class="stat-card">
+      <div class="stat-num">{{ totalToday }}</div>
+      <div class="stat-label">Total visitors today</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">{{ currentlyIn }}</div>
+      <div class="stat-label">Currently in</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">{{ checkedOut }}</div>
+      <div class="stat-label">Checked out</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>All visitors</h2>
+      <input type="text" [(ngModel)]="searchTerm" name="searchTerm" placeholder="Search by name or employee" class="search" />
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Employee</th>
+          <th>Purpose</th>
+          <th>Time in</th>
+          <th>Time out</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let visitor of filteredVisitors">
+          <td>{{ visitor.name }}</td>
+          <td>{{ visitor.employee }}</td>
+          <td>{{ visitor.purpose }}</td>
+          <td>{{ visitor.timeIn }}</td>
+          <td>{{ visitor.timeOut }}</td>
+          <td>
+            <span class="status" [class.status-in]="visitor.status === 'In'" [class.status-out]="visitor.status === 'Out'">
+              {{ visitor.status }}
+            </span>
+          </td>
+          <td>
+            <button *ngIf="visitor.status === 'In'" (click)="checkOut(visitor)">Check out</button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredVisitors.length === 0">
+          <td colspan="7" class="empty">No visitors match your search.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</main>

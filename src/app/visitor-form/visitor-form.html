@@ -1,0 +1,315 @@
+<div class="page">
+
+  <!-- Full Page Loader -->
+<div class="page-loader" *ngIf="submitting">
+  <div class="loader-content">
+
+    <div class="loader-spinner"></div>
+
+    <h3>Please wait...</h3>
+
+    <p>{{ submitLoadingMessage }}</p>
+
+  </div>
+</div>
+  <div class="container">
+
+    <div class="header">
+      <span class="eyebrow">Front Desk</span>
+      <h2>Ignitia Infotech</h2>
+    </div>
+
+    <div class="body-grid">
+
+      <form class="section" [formGroup]="visitorForm" (ngSubmit)="onSubmit()">
+
+        <!-- Top row: Camera / Mobile / Purpose of Visit / Mode of Visit -->
+        <div class="top-row">
+
+          <!-- 1. Camera -->
+          <div class="gate-card camera-card">
+            <div class="avatar-col">
+              <div class="avatar-box" [class.has-photo]="photoDataUrl" (click)="onAvatarClick()">
+                <img *ngIf="photoDataUrl && !cameraActive" [src]="photoDataUrl" alt="Visitor photo">
+                <div *ngIf="!cameraActive && !photoDataUrl" class="avatar-placeholder">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M4 8.5a1.5 1.5 0 0 1 1.5-1.5h2l1-2h7l1 2h2A1.5 1.5 0 0 1 20 8.5v9A1.5 1.5 0 0 1 18.5 19h-13A1.5 1.5 0 0 1 4 17.5v-9Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="13" r="3.2" stroke="currentColor" stroke-width="1.6"/></svg>
+                  <span>Click me</span>
+                </div>
+                <span *ngIf="photoDataUrl && !cameraActive" class="avatar-retake-hint">Tap to retake</span>
+              </div>
+              <small class="error" *ngIf="cameraError">{{ cameraError }}</small>
+              <small class="error" *ngIf="photoError">Photo required</small>
+            </div>
+          </div>
+
+          <!-- 2. Mobile Number -->
+          <div class="gate-card mobile-card">
+            <div class="gate-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M7 3h10a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6"/><path d="M11 18h2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </div>
+            <div class="gate-fields">
+              <label>Mobile Number <span class="needed">*</span></label>
+
+              <input
+                type="tel"
+                formControlName="mobileNo"
+                maxlength="10"
+                inputmode="numeric"
+                placeholder="10-digit mobile number"
+                (input)="onMobileInput($event)"
+                (blur)="onMobileBlur()">
+
+              <small
+                class="error"
+                *ngIf="f['mobileNo'].touched && f['mobileNo'].errors?.['required']">
+                Mobile number is required
+              </small>
+
+              <small
+                class="error"
+                *ngIf="f['mobileNo'].touched && f['mobileNo'].errors?.['pattern']">
+                Enter a valid 10-digit number
+              </small>
+
+              <small
+                class="hint"
+                *ngIf="checkingMobile">
+                <span class="spinner"></span>
+                Checking for an existing record…
+              </small>
+
+              <small
+                class="hint success"
+                *ngIf="mobileVerified && isUpdateMode && f['mobileNo'].value">
+                Welcome back — we've pre-filled your details below.
+              </small>
+            </div>
+          </div>
+
+          <!-- 3. Purpose of Visit -->
+          <div class="gate-card purpose-card">
+            <div class="gate-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.6 4.7.5-3.6 3.1 1.1 4.7-4-2.6-4 2.6 1.1-4.7-3.6-3.1 4.7-.5L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="gate-fields">
+              <label>Purpose of Visit <span class="needed">*</span></label>
+              <input type="text" formControlName="purposeOfVisit" maxlength="30" placeholder="e.g. Client meeting, delivery, interview">
+              <small class="error" *ngIf="f['purposeOfVisit'].touched && f['purposeOfVisit'].errors?.['required']">Required</small>
+            </div>
+          </div>
+
+          <!-- 4. Mode of Visit -->
+          <div class="gate-card mode-card">
+            <div class="gate-fields">
+              <label>Mode of Visit</label>
+              <select formControlName="modeOfVisit">
+                <option value="Meeting">Meeting</option>
+                <option value="Unit">Visit</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Camera popup modal -->
+        <div class="camera-modal" *ngIf="cameraActive">
+
+  <div class="camera-modal-body">
+
+    <div class="camera-loading" *ngIf="cameraOpening">
+      <div class="camera-spinner"></div>
+      <p>Starting camera...</p>
+    </div>
+
+    <video
+      #video
+      autoplay
+      playsinline
+      muted>
+    </video>
+
+    <button
+      type="button"
+      class="camera-back"
+      (click)="stopCamera()">
+
+      <svg viewBox="0 0 24 24" fill="none">
+        <path
+          d="M15 6l-6 6 6 6"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+      </svg>
+
+      Back
+    </button>
+
+    <button
+      type="button"
+      class="camera-shutter"
+      [disabled]="cameraOpening"
+      (click)="captureSelfie()">
+
+      <span></span>
+
+    </button>
+
+  </div>
+
+</div>
+
+        <canvas #canvas style="display:none;"></canvas>
+
+        <div *ngIf="isUpdateMode" class="notice">
+          Existing visitor found — editing their details. Save will update the record.
+        </div>
+
+        <div class="cards-grid">
+
+          <!-- Personal Information -->
+          <div class="form-card">
+            <div class="form-card-header">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.6"/><path d="M5 20c1.4-3.6 4.2-5.4 7-5.4s5.6 1.8 7 5.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              </span>
+              <h3>Personal Information</h3>
+            </div>
+            <div class="form-card-body two-col">
+              <div class="form-group">
+                <label>First Name <span class="needed">*</span></label>
+                <input type="text" formControlName="firstName" maxlength="15">
+                <small class="error" *ngIf="f['firstName'].touched && f['firstName'].errors?.['required']">Required</small>
+              </div>
+              <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" formControlName="lastName" maxlength="20">
+              </div>
+             <div class="form-group">
+  <label>Email <span class="needed">*</span></label>
+  <input type="email" formControlName="email" maxlength="50" class="email-input">
+  <small class="error" *ngIf="f['email'].touched && f['email'].errors?.['email']">Invalid email format</small>
+</div>
+            </div>
+          </div>
+
+          <!-- Organisation -->
+          <div class="form-card">
+            <div class="form-card-header">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M4 21V6.5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1V21M14 21v-8a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v8M4 21h16M8 9h1M8 12h1M8 15h1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              </span>
+              <h3>Organisation</h3>
+            </div>
+            <div class="form-card-body two-col">
+              <div class="form-group">
+                <label>Organisation</label>
+                <input type="text" formControlName="organisation" maxlength="50">
+              </div>
+              <div class="form-group">
+                <label>Designation</label>
+                <input type="text" formControlName="designation" maxlength="30">
+              </div>
+              <div class="form-group full">
+                <label>Organisation Address</label>
+                <textarea rows="2" formControlName="organisationAddress" maxlength="60" placeholder="Registered / office address"></textarea>
+              </div>
+              <div class="form-group">
+                <label>State <span class="needed">*</span></label>
+                <select formControlName="state">
+                  <option value="">Select State</option>
+                  <option *ngFor="let s of states" [value]="s.isoCode">{{ s.name }}</option>
+                </select>
+                <small class="error" *ngIf="f['state'].touched && f['state'].errors?.['required']">Required</small>
+              </div>
+              <div class="form-group">
+                <label>District <span class="needed">*</span></label>
+                <select formControlName="district" [attr.disabled]="!f['state'].value ? true : null">
+                  <option value="">{{ f['state'].value ? 'Select District' : 'Select State first' }}</option>
+                  <option *ngFor="let d of districts" [value]="d.name">{{ d.name }}</option>
+                </select>
+                <small class="error" *ngIf="f['district'].touched && f['district'].errors?.['required']">Required</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visit Details -->
+          <div class="form-card full-span">
+            <div class="form-card-header">
+              <span class="card-icon">
+                <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5.5" width="16" height="15" rx="1.4" stroke="currentColor" stroke-width="1.6"/><path d="M4 10h16M8 3.5v3M16 3.5v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              </span>
+              <h3>Visit Details</h3>
+            </div>
+            <div class="form-card-body four-col">
+              <div class="form-group">
+                <label>Department <span class="needed">*</span></label>
+                <select formControlName="department">
+                  <option value="">Select Department</option>
+                  <option *ngFor="let s of sections" [value]="s.sectionId">{{ s.sectionName }}</option>
+                </select>
+                <small class="error" *ngIf="f['department'].touched && f['department'].errors?.['required']">Required</small>
+              </div>
+              <div class="form-group">
+                <label>Meet Person Name <span class="needed">*</span></label>
+                <select formControlName="meetPersonName" [attr.disabled]="!f['department'].value ? true : null">
+                  <option value="">{{ f['department'].value ? 'Select Person' : 'Select Department first' }}</option>
+                  <option *ngFor="let e of filteredEmployees" [value]="e.employeeId">
+                    {{ e.firstName }} {{ e.lastName }}
+                  </option>
+                </select>
+                <small class="error" *ngIf="f['meetPersonName'].touched && f['meetPersonName'].errors?.['required']">Required</small>
+              </div>
+
+              <!-- Proposed Meet Date & Time: native date input + select-based hour/minute
+                   (native <input type="time"> has no clickable popup in Firefox, so we
+                   don't rely on it — these selects work identically in every browser). -->
+              <div class="form-group meet-datetime-col">
+                <label>Proposed Meet Date &amp; Time <span class="needed">*</span></label>
+                <div class="datetime-pair">
+                  <input type="date" formControlName="proposedMeetDate" [attr.min]="minDate" class="date-part">
+                  <div class="time-row">
+                    <select formControlName="meetHour" class="time-part">
+                      <option value="">HH</option>
+                      <option *ngFor="let h of hours" [value]="h">{{ h }}</option>
+                    </select>
+                    <span class="time-colon">:</span>
+                    <select formControlName="meetMinute" class="time-part">
+                      <option value="">MM</option>
+                      <option *ngFor="let m of minutes" [value]="m">{{ m }}</option>
+                    </select>
+                    <select formControlName="meetPeriod" class="period-part">
+                      <option *ngFor="let p of periods" [value]="p">{{ p }}</option>
+                    </select>
+                  </div>
+                </div>
+                <small class="error" *ngIf="f['proposedMeetDate'].touched && f['proposedMeetDate'].errors?.['required']">Date required</small>
+                <small class="error" *ngIf="(f['meetHour'].touched || f['meetMinute'].touched) && (f['meetHour'].errors?.['required'] || f['meetMinute'].errors?.['required'])">Time required</small>
+                <small class="error" *ngIf="f['meetMinute'].touched && f['meetMinute'].errors?.['pastDate']">Pick a time in the future</small>
+              </div>
+
+              <!-- <div class="form-group">
+                <label> Date</label>
+                <input type="date" formControlName="registrationDate" class="locked-field" readonly>
+              </div> -->
+            </div>
+          </div>
+
+        </div>
+
+        <div class="buttons">
+          <button type="submit" class="save" [disabled]="submitting">
+            {{ submitting ? 'Saving…' : 'Save' }}
+          </button>
+          <button type="button" class="reset" (click)="resetForm()">Reset</button>
+        </div>
+
+        <small class="error submit-error" *ngIf="submitError">{{ submitError }}</small>
+
+      </form>
+
+    </div>
+  </div>
+
+  
+</div>

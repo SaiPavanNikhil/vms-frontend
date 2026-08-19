@@ -1,0 +1,195 @@
+<nav class="nav">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#F7F5F0" stroke-width="1.8"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>
+    </div>
+    <span class="brand-name">Gateway</span>
+  </div>
+  <div class="nav-links">
+    <a href="#">Check-in</a>
+    <a href="#">Who's here</a>
+    <a href="#">Reports</a>
+    <a href="#">Settings</a>
+  </div>
+  <a href="#" class="nav-cta">Front desk login</a>
+</nav>
+
+<section class="hero">
+  <div>
+    <div class="eyebrow">Front desk, digitised</div>
+    <h1>Every visitor, greeted and logged before they reach the door.</h1>
+    <p class="hero-sub">Gateway replaces the paper register with a badge that prints itself — hosts get notified the moment their guest checks in, and security always knows who's on site.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Start a check-in</a>
+      <a href="#" class="btn-secondary">View today's log</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">128</div>
+        <div class="stat-label">Visitors this week</div>
+      </div>
+      <div>
+        <div class="stat-num">42s</div>
+        <div class="stat-label">Avg. check-in time</div>
+      </div>
+      <div>
+        <div class="stat-num">6</div>
+        <div class="stat-label">On site right now</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="badge-wrap">
+    <div class="badge">
+      <div class="badge-top">
+        <span class="badge-top-label">Visitor badge</span>
+        <span class="badge-clock mono">{{ clockLabel }}</span>
+      </div>
+      <div class="badge-body">
+        <div class="badge-photo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+        </div>
+        <div class="badge-field">
+          <label for="vname">Full name</label>
+          <input id="vname" type="text" placeholder="e.g. Anjali Verma" [(ngModel)]="visitorName" name="visitorName" />
+        </div>
+        <div class="badge-field">
+          <label for="vhost">Visiting</label>
+          <input id="vhost" type="text" placeholder="Host name or department" [(ngModel)]="visitorHost" name="visitorHost" />
+        </div>
+        <div class="badge-field">
+          <label for="vreason">Purpose of visit</label>
+          <input id="vreason" type="text" placeholder="e.g. Interview, delivery, meeting" [(ngModel)]="visitorReason" name="visitorReason" />
+        </div>
+        <div class="badge-id-row">
+          <div class="badge-id">Badge ID <span class="mono">{{ badgeId }}</span></div>
+          <div class="qr"></div>
+        </div>
+        <button class="badge-submit" [class.badge-submit-success]="submitState === 'success'" (click)="issueBadge()">
+          {{ submitLabel }}
+        </button>
+        <div class="badge-note">Your host is alerted by SMS the moment you're checked in.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <div class="eyebrow">How it works</div>
+    <h2>From the door to your desk in four steps</h2>
+    <p>No pre-registration required — walk-ins get the same fast lane as scheduled guests.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-mark">01 — Arrive</div>
+      <h3>Tap to begin</h3>
+      <p>Guest opens check-in on the lobby tablet or scans the desk QR code.</p>
+    </div>
+    <div class="step">
+      <div class="step-mark">02 — Details</div>
+      <h3>Fill the badge</h3>
+      <p>Name, host, and purpose — that's all it takes, under a minute.</p>
+    </div>
+    <div class="step">
+      <div class="step-mark">03 — Notify</div>
+      <h3>Host is alerted</h3>
+      <p>An SMS and desk notification go out the instant check-in completes.</p>
+    </div>
+    <div class="step">
+      <div class="step-mark">04 — Badge</div>
+      <h3>Print and go</h3>
+      <p>A dated badge prints at the desk, ready to clip on and walk in.</p>
+    </div>
+  </div>
+</section>
+
+<section class="roster">
+  <div class="roster-inner">
+    <div class="roster-head">
+      <div>
+        <h2>Who's in the building</h2>
+        <p>Live view for front desk and security</p>
+      </div>
+      <span class="live-dot">Live</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Visitor</th>
+          <th>Host</th>
+          <th>Purpose</th>
+          <th>Checked in</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let visitor of roster">
+          <td class="visitor-name">{{ visitor.name }}</td>
+          <td class="visitor-host">{{ visitor.host }}</td>
+          <td>{{ visitor.purpose }}</td>
+          <td class="time-cell">{{ visitor.time }}</td>
+          <td>
+            <span class="pill" [ngClass]="'pill-' + visitor.status">{{ statusLabel(visitor.status) }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <div class="eyebrow">Built for the front desk</div>
+    <h2>Everything a lobby needs, nothing it doesn't</h2>
+  </div>
+  <div class="features">
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>
+      </div>
+      <h3>Pre-registration</h3>
+      <p>Hosts add expected guests ahead of time so check-in is a one-tap confirmation.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><circle cx="12" cy="12" r="5"/></svg>
+      </div>
+      <h3>Instant host alerts</h3>
+      <p>SMS and desk notifications reach the right person the moment a guest arrives.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>
+      </div>
+      <h3>Printed badges</h3>
+      <p>Dated, photo-optional badges print automatically at the reception desk.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V9M12 19V5M20 19v-7"/></svg>
+      </div>
+      <h3>Occupancy reports</h3>
+      <p>Daily and monthly visitor logs, exportable for compliance and audits.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 22s8-4 8-10V6l-8-3-8 3v6c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h3>Watchlist checks</h3>
+      <p>Flags repeat or restricted visitors automatically at check-in.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+      </div>
+      <h3>Fast checkout</h3>
+      <p>One tap at the badge kiosk closes the visit and frees up the roster.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>Gateway Visitor Management System</span>
+  <span>Front desk build — internal use</span>
+</footer>

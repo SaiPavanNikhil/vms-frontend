@@ -1,0 +1,701 @@
+* {
+  box-sizing: border-box;
+}
+
+:host {
+  display: block;
+}
+
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.visitor-pass-page {
+  min-height: 100vh;
+
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 35px 20px;
+
+  background: #f1f4f8;
+}
+
+
+/* =========================================================
+   PASS
+========================================================= */
+
+.visitor-pass {
+  width: 100%;
+
+  max-width: 650px;
+
+  background: #ffffff;
+
+  border-radius: 14px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.12);
+
+  border: 1px solid #dce1e7;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.pass-header {
+  min-height: 92px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 18px;
+
+  padding: 16px 25px;
+
+  background: #1255a4;
+
+  color: #ffffff;
+}
+
+
+/* Building icon */
+
+.header-building-icon {
+  height: 50px;
+
+  display: flex;
+
+  align-items: flex-end;
+
+  gap: 3px;
+
+  font-size: 0;
+
+  color: #ffffff;
+}
+
+.building {
+  display: block;
+
+  width: 13px;
+
+  background: #ffffff;
+
+  border-radius: 1px 1px 0 0;
+}
+
+.building-one {
+  height: 29px;
+}
+
+.building-two {
+  height: 43px;
+}
+
+.building-three {
+  height: 35px;
+}
+
+
+.header-content {
+  text-align: center;
+}
+
+.header-content h1 {
+  margin: 0;
+
+  font-size: 29px;
+
+  line-height: 1.1;
+
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+.header-content p {
+  margin: 5px 0 0;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  letter-spacing: 0.8px;
+}
+
+
+/* =========================================================
+   PASS BODY
+========================================================= */
+
+.pass-body {
+  display: flex;
+
+  gap: 24px;
+
+  padding: 25px 30px 20px;
+}
+
+
+/* =========================================================
+   PHOTO
+========================================================= */
+
+.photo-container {
+  width: 125px;
+
+  height: 150px;
+
+  flex-shrink: 0;
+
+  overflow: hidden;
+
+  border-radius: 5px;
+
+  border: 1px solid #d3d8df;
+
+  background: #f1f3f6;
+
+  box-shadow:
+    0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.photo-container img {
+  width: 100%;
+
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+}
+
+
+/* =========================================================
+   VISITOR DETAILS
+========================================================= */
+
+.visitor-details {
+  flex: 1;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  gap: 16px;
+}
+
+
+.detail-row {
+  display: grid;
+
+  grid-template-columns: 120px 15px 1fr;
+
+  align-items: start;
+
+  font-size: 14px;
+
+  line-height: 1.4;
+}
+
+.detail-label {
+  color: #30343a;
+
+  font-weight: 600;
+}
+
+.detail-separator {
+  color: #555b63;
+
+  text-align: center;
+
+  font-weight: 600;
+}
+
+.detail-value {
+  color: #20242a;
+
+  font-weight: 500;
+
+  word-break: break-word;
+}
+
+
+/* =========================================================
+   DIVIDER
+========================================================= */
+
+.pass-divider {
+  height: 1px;
+
+  margin: 0 30px;
+
+  background: #cfd4da;
+}
+
+
+/* =========================================================
+   VISIT INFORMATION
+========================================================= */
+
+.visit-information {
+  padding: 22px 30px 25px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 15px;
+}
+
+
+.visit-row {
+  display: grid;
+
+  grid-template-columns: 28px 120px 15px 1fr;
+
+  align-items: center;
+
+  min-height: 27px;
+
+  font-size: 14px;
+}
+
+
+.visit-icon {
+  font-size: 18px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-start;
+}
+
+.pass-icon {
+  width: 21px;
+
+  height: 21px;
+
+  border-radius: 4px;
+
+  background: #1255a4;
+
+  color: #ffffff;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  justify-content: center;
+}
+
+.visit-label {
+  color: #30343a;
+
+  font-weight: 600;
+}
+
+.visit-separator {
+  text-align: center;
+
+  color: #555b63;
+
+  font-weight: 600;
+}
+
+.visit-value {
+  color: #20242a;
+
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   HOST
+========================================================= */
+
+.host-value {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.host-value strong {
+  color: #20242a;
+
+  font-weight: 600;
+}
+
+.host-value small {
+  color: #555b63;
+
+  font-size: 11px;
+
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   PASS NUMBER
+========================================================= */
+
+.pass-number {
+  color: #1255a4;
+
+  font-size: 14px;
+
+  letter-spacing: 0.3px;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.pass-footer {
+  padding: 14px 20px 17px;
+
+  text-align: center;
+
+  border-top: 1px solid #dce1e7;
+
+  background: #f8f9fb;
+}
+
+.pass-footer p {
+  margin: 3px 0;
+
+  color: #174f91;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading-container {
+  width: 100%;
+
+  max-width: 400px;
+
+  padding: 45px 30px;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.loading-container p {
+  margin: 15px 0 0;
+
+  color: #667085;
+
+  font-size: 14px;
+}
+
+.loader {
+  width: 38px;
+
+  height: 38px;
+
+  margin: 0 auto;
+
+  border: 4px solid #e4e9ef;
+
+  border-top-color: #1255a4;
+
+  border-radius: 50%;
+
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.error-container {
+  width: 100%;
+
+  max-width: 450px;
+
+  padding: 40px 30px;
+
+  text-align: center;
+
+  background: #ffffff;
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.error-icon {
+  width: 50px;
+
+  height: 50px;
+
+  margin: 0 auto 15px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #ffeded;
+
+  color: #c62828;
+
+  font-size: 23px;
+
+  font-weight: 700;
+}
+
+.error-container h2 {
+  margin: 0;
+
+  color: #252a31;
+
+  font-size: 20px;
+}
+
+.error-container p {
+  margin: 10px 0 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .visitor-pass-page {
+    padding: 20px 12px;
+
+    align-items: flex-start;
+  }
+
+  .visitor-pass {
+    border-radius: 10px;
+  }
+
+  .pass-header {
+    min-height: 82px;
+
+    padding: 14px 15px;
+
+    gap: 12px;
+  }
+
+  .header-content h1 {
+    font-size: 23px;
+  }
+
+  .header-content p {
+    font-size: 12px;
+  }
+
+  .header-building-icon {
+    transform: scale(0.85);
+  }
+
+  .pass-body {
+    padding: 20px;
+
+    gap: 18px;
+  }
+
+  .photo-container {
+    width: 105px;
+
+    height: 128px;
+  }
+
+  .detail-row {
+    grid-template-columns: 100px 12px 1fr;
+
+    font-size: 13px;
+
+    gap: 0;
+  }
+
+  .visit-information {
+    padding: 20px;
+  }
+
+  .visit-row {
+    grid-template-columns: 25px 105px 12px 1fr;
+
+    font-size: 13px;
+  }
+
+  .pass-divider {
+    margin: 0 20px;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 450px) {
+
+  .visitor-pass-page {
+    padding: 10px 7px;
+  }
+
+  .pass-header {
+    min-height: 76px;
+
+    gap: 7px;
+  }
+
+  .header-building-icon {
+    display: none;
+  }
+
+  .header-content h1 {
+    font-size: 22px;
+
+    letter-spacing: 0.7px;
+  }
+
+  .header-content p {
+    font-size: 11px;
+
+    letter-spacing: 0.5px;
+  }
+
+
+  /* Stack photo and details */
+
+  .pass-body {
+    flex-direction: column;
+
+    align-items: center;
+
+    padding: 20px 18px;
+  }
+
+  .photo-container {
+    width: 115px;
+
+    height: 140px;
+  }
+
+  .visitor-details {
+    width: 100%;
+
+    gap: 13px;
+  }
+
+  .detail-row {
+    grid-template-columns: 100px 12px 1fr;
+
+    font-size: 13px;
+  }
+
+
+  .pass-divider {
+    margin: 0 18px;
+  }
+
+
+  .visit-information {
+    padding: 20px 18px;
+  }
+
+  .visit-row {
+    grid-template-columns: 25px 95px 12px 1fr;
+
+    font-size: 13px;
+  }
+
+  .visit-icon {
+    font-size: 16px;
+  }
+
+  .pass-footer {
+    padding: 13px 10px 15px;
+  }
+
+  .pass-footer p {
+    font-size: 12px;
+  }
+
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 350px) {
+
+  .detail-row {
+    grid-template-columns: 90px 10px 1fr;
+
+    font-size: 12px;
+  }
+
+  .visit-row {
+    grid-template-columns: 22px 85px 10px 1fr;
+
+    font-size: 12px;
+  }
+
+  .photo-container {
+    width: 105px;
+
+    height: 128px;
+  }
+
+}
