@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../services/admin.service';
+import Swal from 'sweetalert2';
 // import { AdminService } from '../../services/admin.service';
 
 @Component({
@@ -25,6 +26,8 @@ export class SectionManagement implements OnInit {
   isEditMode = false;
 
   selectedSectionId = '';
+  sectionActionLoading = false;
+  sectionActionLoadingMessage = '';
 
   sectionForm = {
     sectionName: '',
@@ -102,12 +105,16 @@ export class SectionManagement implements OnInit {
 
         console.error(error);
 
-        alert('Unable to load employees.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Unable to Load Employees',
+          text: 'Unable to load employees. Please try again.',
+          confirmButtonText: 'OK'
+        });
 
       }
 
     });
-
   }
 
   /**
@@ -115,36 +122,75 @@ export class SectionManagement implements OnInit {
    */
   saveSection(): void {
 
-    if (!this.sectionForm.sectionName.trim()) {
+    if (this.sectionForm.sectionName.trim() === '') {
 
-      alert('Please enter Section Name');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Section Name Required',
+        text: 'Please enter Section Name.',
+        confirmButtonText: 'OK'
+      });
 
       return;
-
     }
+
+    if (this.sectionActionLoading) {
+      return;
+    }
+
+    this.sectionActionLoading = true;
+    this.sectionActionLoadingMessage = 'Saving section...';
 
     this.adminService.addSection(this.sectionForm).subscribe({
 
       next: (response: any) => {
 
-        alert(response);
+        console.log(
+          'Section saved successfully:',
+          response
+        );
 
-        this.loadSections();
+        this.sectionActionLoading = false;
+        this.sectionActionLoadingMessage = '';
 
-        this.clearForm();
+        Swal.fire({
+          icon: 'success',
+          title: 'Section Saved',
+          text: 'Section has been saved successfully.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#16a34a'
+        }).then(() => {
+
+          this.loadSections();
+          this.clearForm();
+
+        });
 
       },
 
       error: (error: any) => {
 
-        console.error(error);
+        console.error(
+          'Section save error:',
+          error
+        );
 
-        alert('Unable to save section.');
+        this.sectionActionLoading = false;
+        this.sectionActionLoadingMessage = '';
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Unable to Save',
+          text:
+            error?.error?.message ||
+            error?.error ||
+            'Unable to save section. Please try again.',
+          confirmButtonText: 'OK'
+        });
 
       }
 
     });
-
   }
 
   /**
@@ -171,6 +217,13 @@ export class SectionManagement implements OnInit {
    */
   updateSection(): void {
 
+    if (this.sectionActionLoading) {
+      return;
+    }
+
+    this.sectionActionLoading = true;
+    this.sectionActionLoadingMessage = 'Updating section...';
+
     this.adminService.updateSection(
       this.selectedSectionId,
       this.sectionForm
@@ -178,24 +231,52 @@ export class SectionManagement implements OnInit {
 
       next: (response: any) => {
 
-        alert(response);
+        console.log(
+          'Section updated successfully:',
+          response
+        );
 
-        this.loadSections();
+        this.sectionActionLoading = false;
+        this.sectionActionLoadingMessage = '';
 
-        this.clearForm();
+        Swal.fire({
+          icon: 'success',
+          title: 'Section Updated',
+          text: 'Section has been updated successfully.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#16a34a'
+        }).then(() => {
+
+          this.loadSections();
+          this.clearForm();
+
+        });
 
       },
 
       error: (error: any) => {
 
-        console.error(error);
+        console.error(
+          'Section update error:',
+          error
+        );
 
-        alert('Unable to update section.');
+        this.sectionActionLoading = false;
+        this.sectionActionLoadingMessage = '';
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Unable to Update',
+          text:
+            error?.error?.message ||
+            error?.error ||
+            'Unable to update section. Please try again.',
+          confirmButtonText: 'OK'
+        });
 
       }
 
     });
-
   }
 
   /**
@@ -203,32 +284,79 @@ export class SectionManagement implements OnInit {
    */
   deleteSection(sectionId: string): void {
 
-    if (!confirm('Are you sure you want to delete this section?')) {
-
+    if (this.sectionActionLoading) {
       return;
-
     }
 
-    this.adminService.deleteSection(sectionId).subscribe({
+    Swal.fire({
+      icon: 'warning',
+      title: 'Delete Section?',
+      text: 'Are you sure you want to delete this section?',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Delete',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280'
+    }).then((result) => {
 
-      next: (response: any) => {
-
-        alert(response);
-
-        this.loadSections();
-
-      },
-
-      error: (error: any) => {
-
-        console.error(error);
-
-        alert('Unable to delete section.');
-
+      if (!result.isConfirmed) {
+        return;
       }
 
-    });
+      this.sectionActionLoading = true;
+      this.sectionActionLoadingMessage = 'Deleting section...';
 
+      this.adminService.deleteSection(sectionId).subscribe({
+
+        next: (response: any) => {
+
+          console.log(
+            'Section deleted successfully:',
+            response
+          );
+
+          this.sectionActionLoading = false;
+          this.sectionActionLoadingMessage = '';
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Section Deleted',
+            text: 'Section has been deleted successfully.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#16a34a'
+          }).then(() => {
+
+            this.loadSections();
+
+          });
+
+        },
+
+        error: (error: any) => {
+
+          console.error(
+            'Section delete error:',
+            error
+          );
+
+          this.sectionActionLoading = false;
+          this.sectionActionLoadingMessage = '';
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Unable to Delete',
+            text:
+              error?.error?.message ||
+              error?.error ||
+              'Unable to delete section. Please try again.',
+            confirmButtonText: 'OK'
+          });
+
+        }
+
+      });
+
+    });
   }
 
   /**

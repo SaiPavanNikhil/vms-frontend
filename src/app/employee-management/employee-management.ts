@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../services/admin.service';
+import Swal from 'sweetalert2';
 // import { AdminService } from '../services/admin.service';
 // import { AdminService } from '../../services/admin.service';
 
@@ -26,6 +27,10 @@ export class EmployeeManagement implements OnInit {
   isEditMode = false;
 
   selectedEmployeeId = '';
+
+  savingEmployee = false;
+  updatingEmployee = false;
+  deletingEmployee = false;
 
   employeeForm = {
     firstName: '',
@@ -110,53 +115,110 @@ export class EmployeeManagement implements OnInit {
    */
   saveEmployee(): void {
 
-    if (!this.employeeForm.firstName.trim()) {
+  // ================================
+  // VALIDATION
+  // ================================
 
-      alert('Please enter First Name');
+  if (!this.employeeForm.firstName.trim()) {
 
-      return;
+    Swal.fire({
+      icon: 'warning',
+      title: 'First Name Required',
+      text: 'Please enter First Name.',
+      confirmButtonText: 'OK'
+    });
 
-    }
+    return;
+  }
 
-    if (!this.employeeForm.password.trim()) {
+  if (!this.employeeForm.password.trim()) {
 
-        alert('Please enter Password');
+    Swal.fire({
+      icon: 'warning',
+      title: 'Password Required',
+      text: 'Please enter Password.',
+      confirmButtonText: 'OK'
+    });
 
-        return;
+    return;
+  }
 
-    }
+  if (!this.employeeForm.sectionId) {
 
-    if (!this.employeeForm.sectionId) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Section Required',
+      text: 'Please select Section.',
+      confirmButtonText: 'OK'
+    });
 
-      alert('Please select Section');
+    return;
+  }
 
-      return;
 
-    }
+  // ================================
+  // START LOADER
+  // ================================
 
-    this.adminService.addEmployee(this.employeeForm).subscribe({
+  this.savingEmployee = true;
+
+
+  // ================================
+  // SAVE EMPLOYEE
+  // ================================
+
+  this.adminService
+    .addEmployee(this.employeeForm)
+    .subscribe({
 
       next: (response: any) => {
 
-        alert(response);
+        console.log(
+          'Employee saved successfully:',
+          response
+        );
 
-        this.loadEmployees();
+        // Stop loader BEFORE SweetAlert
+        // this.savingEmployee = false;
 
-        this.clearForm();
+        Swal.fire({
+          icon: 'success',
+          title: 'Employee Saved',
+          text: 'Employee has been saved successfully.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#16a34a'
+        }).then(() => {
+
+          this.loadEmployees();
+          this.clearForm();
+
+        });
 
       },
 
       error: (error: any) => {
 
-        console.error(error);
+        console.error(
+          'Employee save error:',
+          error
+        );
 
-        alert('Unable to save employee.');
+        this.savingEmployee = false;
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Unable to Save',
+          text:
+            error?.error?.message ||
+            error?.error ||
+            'Unable to save employee. Please try again.',
+          confirmButtonText: 'OK'
+        });
 
       }
 
     });
-
-  }
+}
 
   /**
    * Edit Employee
@@ -185,65 +247,143 @@ export class EmployeeManagement implements OnInit {
    */
   updateEmployee(): void {
 
-    this.adminService.updateEmployee(
-      this.selectedEmployeeId,
-      this.employeeForm
-    ).subscribe({
+  if (this.updatingEmployee) {
+    return;
+  }
 
-      next: (response: any) => {
+  this.updatingEmployee = true;
 
-        alert(response);
+  this.adminService.updateEmployee(
+    this.selectedEmployeeId,
+    this.employeeForm
+  ).subscribe({
+
+    next: (response: any) => {
+
+      console.log(
+        'Employee updated successfully:',
+        response
+      );
+
+      this.updatingEmployee = false;
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Employee Updated',
+        text: 'Employee has been updated successfully.',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#16a34a'
+      }).then(() => {
 
         this.loadEmployees();
-
         this.clearForm();
 
-      },
+      });
 
-      error: (error: any) => {
+    },
 
-        console.error(error);
+    error: (error: any) => {
 
-        alert('Unable to update employee.');
+      console.error(
+        'Employee update error:',
+        error
+      );
 
-      }
+      this.updatingEmployee = false;
 
-    });
+      Swal.fire({
+        icon: 'error',
+        title: 'Unable to Update',
+        text:
+          error?.error?.message ||
+          error?.error ||
+          'Unable to update employee. Please try again.',
+        confirmButtonText: 'OK'
+      });
 
-  }
+    }
+
+  });
+}
 
   /**
    * Delete Employee
    */
-  deleteEmployee(employeeId: string): void {
+ deleteEmployee(employeeId: string): void {
 
-    if (!confirm('Are you sure you want to delete this employee?')) {
+  if (this.deletingEmployee) {
+    return;
+  }
 
+  Swal.fire({
+    icon: 'warning',
+    title: 'Delete Employee?',
+    text: 'Are you sure you want to delete this employee?',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, Delete',
+    cancelButtonText: 'Cancel',
+    confirmButtonColor: '#dc2626',
+    cancelButtonColor: '#6b7280'
+  }).then((result) => {
+
+    if (!result.isConfirmed) {
       return;
-
     }
 
-    this.adminService.deleteEmployee(employeeId).subscribe({
+    this.deletingEmployee = true;
 
-      next: (response: any) => {
+    this.adminService
+      .deleteEmployee(employeeId)
+      .subscribe({
 
-        alert(response);
+        next: (response: any) => {
 
-        this.loadEmployees();
+          console.log(
+            'Employee deleted successfully:',
+            response
+          );
 
-      },
+          this.deletingEmployee = false;
 
-      error: (error: any) => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Employee Deleted',
+            text: 'Employee has been deleted successfully.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#16a34a'
+          }).then(() => {
 
-        console.error(error);
+            this.loadEmployees();
 
-        alert('Unable to delete employee.');
+          });
 
-      }
+        },
 
-    });
+        error: (error: any) => {
 
-  }
+          console.error(
+            'Employee delete error:',
+            error
+          );
+
+          this.deletingEmployee = false;
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Unable to Delete',
+            text:
+              error?.error?.message ||
+              error?.error ||
+              'Unable to delete employee. Please try again.',
+            confirmButtonText: 'OK'
+          });
+
+        }
+
+      });
+
+  });
+}
 
   /**
    * Clear Form

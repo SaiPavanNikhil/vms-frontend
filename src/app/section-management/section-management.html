@@ -1,5 +1,25 @@
 <div class="section-container">
 
+    @if (sectionActionLoading) {
+  <div class="section-action-loader">
+
+    <div class="section-loader-box">
+
+      <div class="section-spinner"></div>
+
+      <div class="section-loader-title">
+        Please wait...
+      </div>
+
+      <div class="section-loader-message">
+        {{ sectionActionLoadingMessage }}
+      </div>
+
+    </div>
+
+  </div>
+}
+
     <!-- Page Header -->
     <div class="page-header">
         <h2>Section Management</h2>

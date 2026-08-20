@@ -244,3 +244,69 @@ tbody tr:hover {
   }
 
 }
+
+.section-action-loader {
+  position: fixed;
+  inset: 0;
+
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(0, 0, 0, 0.3);
+
+  cursor: wait;
+}
+
+.section-loader-box {
+  min-width: 230px;
+
+  padding: 25px 30px;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  border-radius: 12px;
+
+  text-align: center;
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+}
+
+.section-spinner {
+  width: 42px;
+  height: 42px;
+
+  margin: 0 auto 15px;
+
+  border: 4px solid #e5e7eb;
+  border-top-color: #16a34a;
+
+  border-radius: 50%;
+
+  animation: sectionSpinner 0.8s linear infinite;
+}
+
+.section-loader-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.section-loader-message {
+  margin-top: 5px;
+
+  font-size: 14px;
+  color: #6b7280;
+}
+
+@keyframes sectionSpinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.swal2-container {
+  z-index: 10000 !important;
+}

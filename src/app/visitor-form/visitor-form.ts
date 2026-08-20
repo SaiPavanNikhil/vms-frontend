@@ -685,8 +685,8 @@ export class VisitorForm implements OnInit {
         Swal.fire({
           icon: 'success',
           title: this.isUpdateMode
-            ? 'Visitor Updated Successfully'
-            : 'Visitor Registered Successfully',
+            ? 'Successful'
+            : 'Successful',
 
           text:
             'Visitor details have been saved and the meeting request has been sent to the host.',

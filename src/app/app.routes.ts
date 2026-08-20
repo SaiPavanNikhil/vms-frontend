@@ -17,8 +17,8 @@ import { VisitorCheckInOut } from './visitor-check-in-out/visitor-check-in-out';
 import { VisitorPass } from './visitor-pass/visitor-pass';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'home-page', pathMatch: 'full' },
-  { path: 'home-page', component: HomeComponent },
+  { path: '', redirectTo: 'admin-dashboard', pathMatch: 'full' },
+  // { path: 'home-page', component: HomeComponent },
   { path: 'admin', component: AdminPage },
   { path: 'Visitor-Form', component: VisitorForm },
   { path: 'HostApproval', component: HostApproval },
