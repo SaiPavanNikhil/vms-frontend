@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { environment } from '../environments/environment.service';
 
 interface VisitorPassResponse {
 
@@ -43,7 +44,7 @@ export class VisitorPass implements OnInit {
   // =========================================================
 
   private readonly apiUrl =
-    'http://localhost:8080/api/visitor-pass';
+    `${environment.apiBaseUrl}/api/visitor-pass`;
 
 
   // =========================================================
@@ -77,10 +78,12 @@ export class VisitorPass implements OnInit {
 
     this.route.paramMap.subscribe(params => {
 
-      const meetingId =
-        params.get('meetingId');
+      // This is actually the encrypted token
+      const encryptedToken = params.get('meetingId');
 
-      if (!meetingId) {
+      console.log('Encrypted Token:', encryptedToken);
+
+      if (!encryptedToken) {
 
         this.loading = false;
 
@@ -90,9 +93,51 @@ export class VisitorPass implements OnInit {
         return;
       }
 
-      this.loadVisitorPass(
-        Number(meetingId)
-      );
+      // Send encrypted token to backend
+      this.http.get<{ meetingId: number }>(
+        `${this.apiUrl}/decrypt/${encodeURIComponent(encryptedToken)}`
+      )
+      .subscribe({
+
+        next: (response) => {
+
+          // Backend returns actual meeting ID
+          const meetingId = response.meetingId;
+
+          console.log('Decrypted Meeting ID:', meetingId);
+
+          if (!meetingId) {
+
+            this.loading = false;
+
+            this.errorMessage =
+              'Invalid visitor pass link.';
+
+            return;
+          }
+
+          // YOUR EXISTING METHOD
+          this.loadVisitorPass(
+            Number(meetingId)
+          );
+
+        },
+
+        error: (error) => {
+
+          console.error(
+            'Token decryption failed:',
+            error
+          );
+
+          this.loading = false;
+
+          this.errorMessage =
+            'Invalid or expired visitor pass link.';
+
+        }
+
+      });
 
     });
 
