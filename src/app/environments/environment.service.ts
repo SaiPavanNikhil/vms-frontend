@@ -26,7 +26,7 @@ else {
   // ✅ Railway backend for production
   // apiBaseUrl = 'http://localhost:8080';
   // apiBaseUrl = 'http://172.16.1.35:8080';
-  apiBaseUrl = 'https://vms-backend-production-303d.up.railway.app/';
+  apiBaseUrl = 'https://vms-backend-production-303d.up.railway.app';
 }
 
 export const environment = {

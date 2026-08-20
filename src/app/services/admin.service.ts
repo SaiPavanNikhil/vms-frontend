@@ -24,17 +24,39 @@ export class AdminService {
     return this.http.get(`${this.apiUrl}/api/sections/${sectionId}`);
   }
 
-  addSection(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/sections`, data);
-  }
+  addSection(data: any): Observable<string> {
+  return this.http.post(
+    `${this.apiUrl}/api/sections`,
+    data,
+    {
+      responseType: 'text'
+    }
+  );
+}
 
-  updateSection(sectionId: string, data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/api/sections/${sectionId}`, data);
-  }
+updateSection(
+  sectionId: string,
+  data: any
+): Observable<string> {
+  return this.http.put(
+    `${this.apiUrl}/api/sections/${sectionId}`,
+    data,
+    {
+      responseType: 'text'
+    }
+  );
+}
 
-  deleteSection(sectionId: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/api/sections/${sectionId}`);
-  }
+deleteSection(
+  sectionId: string
+): Observable<string> {
+  return this.http.delete(
+    `${this.apiUrl}/api/sections/${sectionId}`,
+    {
+      responseType: 'text'
+    }
+  );
+}
 
   // =====================================================
   // EMPLOYEE APIs
@@ -48,16 +70,36 @@ export class AdminService {
     return this.http.get(`${this.apiUrl}/api/employees/${employeeId}`);
   }
 
-  addEmployee(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/employees`, data);
+  addEmployee(data: any): Observable<string> {
+    return this.http.post(
+      `${this.apiUrl}/api/employees`,
+      data,
+      {
+        responseType: 'text'
+      }
+    );
   }
 
-  updateEmployee(employeeId: string, data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/api/employees/${employeeId}`, data);
+  updateEmployee(
+    employeeId: string,
+    data: any
+  ): Observable<string> {
+    return this.http.put(
+      `${this.apiUrl}/api/employees/${employeeId}`,
+      data,
+      {
+        responseType: 'text'
+      }
+    );
   }
 
-  deleteEmployee(employeeId: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/api/employees/${employeeId}`);
+  deleteEmployee(employeeId: string): Observable<string> {
+    return this.http.delete(
+      `${this.apiUrl}/api/employees/${employeeId}`,
+      {
+        responseType: 'text'
+      }
+    );
   }
   getAllVisitors(): Observable<any> {
     return this.http.get(`${this.apiUrl}/api/visitors`);
