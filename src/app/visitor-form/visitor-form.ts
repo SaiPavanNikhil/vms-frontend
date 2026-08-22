@@ -83,6 +83,7 @@ export class VisitorForm implements OnInit {
   submittedOnce = false;
 
   isUpdateMode = false;
+  visitorExists = false;
 
   checkInOutLoading = false;
   loading = false;
@@ -97,6 +98,7 @@ checkInOutStatus:
   | null = null;
 
   mobileLookupInProgress = false;
+  mobileLookupCompleted = false;
 
   private stream: MediaStream | null = null;
 
@@ -265,26 +267,27 @@ locationData: StateDistrict[] = [];
 
   onMobileInput(event: Event): void {
 
-    const input = event.target as HTMLInputElement;
+  const input = event.target as HTMLInputElement;
 
-    // Allow only numbers
-    const mobileNo = input.value.replace(/\D/g, '').slice(0, 10);
+  const mobileNo =
+    input.value.replace(/\D/g, '').slice(0, 10);
 
-    input.value = mobileNo;
+  input.value = mobileNo;
 
-    this.f['mobileNo'].setValue(mobileNo, {
-      emitEvent: false
-    });
+  this.f['mobileNo'].setValue(mobileNo, {
+    emitEvent: false
+  });
 
-    // Automatically trigger verification
-    // when exactly 10 digits are entered
-    if (mobileNo.length === 10) {
+  // User is entering/changing a number,
+  // so the previous visitor result is no longer valid.
+  this.mobileLookupCompleted = false;
+  this.visitorExists = false;
+  this.isUpdateMode = false;
 
-      this.onMobileBlur();
-
-    }
-
+  if (mobileNo.length === 10) {
+    this.onMobileBlur();
   }
+}
 
   onMobileBlur(): void {
 
@@ -295,42 +298,42 @@ locationData: StateDistrict[] = [];
     return;
   }
 
+  // Already checked this exact number
+  if (this.mobileLookupCompleted) {
+    return;
+  }
 
-  // =====================================================
-  // PREVENT DUPLICATE REQUESTS
-  // =====================================================
-
+  // Request already running
   if (this.mobileLookupInProgress) {
     return;
   }
 
   this.mobileLookupInProgress = true;
-
-
-  // =====================================================
-  // API 1
-  // FIND EXISTING VISITOR
-  // =====================================================
-
   this.loading = true;
 
   this.http.get<any>(
     `${this.apiUrl}/${mobileNo}`
-  )
-  .subscribe({
+  ).subscribe({
+
+    // =====================================================
+    // EXISTING VISITOR
+    // =====================================================
 
     next: (visitor) => {
 
       this.mobileLookupInProgress = false;
       this.loading = false;
 
+      this.mobileLookupCompleted = true;
 
-      // =================================================
-      // VISITOR EXISTS
-      // =================================================
-
+      // IMPORTANT
+      this.visitorExists = true;
       this.isUpdateMode = true;
 
+      console.log(
+        'Existing visitor found:',
+        visitor
+      );
 
       this.visitorForm.patchValue({
 
@@ -369,60 +372,70 @@ locationData: StateDistrict[] = [];
 
       });
 
-
-      // =================================================
-      // API 2
-      // CHECK CHECK-IN / CHECK-OUT
-      // =================================================
-
+      // Check today's meeting
       this.checkVisitorMeeting(mobileNo);
-
     },
 
+
+    // =====================================================
+    // VISITOR NOT FOUND
+    // =====================================================
 
     error: (error) => {
 
       this.mobileLookupInProgress = false;
       this.loading = false;
 
+      // IMPORTANT
+      this.mobileLookupCompleted = true;
 
-      // =================================================
-      // VISITOR DOES NOT EXIST
-      // =================================================
-
+      // This is a NEW visitor
+      this.visitorExists = false;
       this.isUpdateMode = false;
 
+      console.log(
+        'Visitor lookup response:',
+        error
+      );
 
-      if (
+      const message =
+        error?.error?.message ||
+        error?.error?.error ||
+        '';
+
+      const lowerMessage =
+        String(message).toLowerCase();
+
+      const visitorNotFound =
         error?.status === 404 ||
-        error?.status === 400
-      ) {
+        error?.status === 400 ||
+        lowerMessage.includes('visitor not found') ||
+        lowerMessage.includes('no visitor');
+
+      if (visitorNotFound) {
 
         Swal.fire({
           icon: 'info',
           title: 'New Visitor',
           text:
-            'No visitor is registered with this mobile number.',
+            'No visitor is registered with this mobile number. You can continue with a new registration.',
           confirmButtonText: 'OK'
         });
 
         return;
       }
 
-
-      Swal.fire({
-        icon: 'error',
-        title: 'Unable to Load Visitor',
-        text:
-          error?.error?.message ||
-          'Unable to retrieve visitor details.',
-        confirmButtonText: 'OK'
-      });
-
+      // Swal.fire({
+      //   icon: 'error',
+      //   title: 'Unable to Load Visitor',
+      //   text:
+      //     message ||
+      //     'Unable to retrieve visitor details.',
+      //   confirmButtonText: 'OK'
+      // });
     }
 
   });
-
 }
   // ---------- Live selfie capture ----------
 
@@ -728,15 +741,23 @@ locationData: StateDistrict[] = [];
       : 'Saving visitor details...';
 
 
-  const request$ = this.isUpdateMode
-    ? this.http.put(
-        `${this.apiUrl}/${raw.mobileNo}`,
-        payload
-      )
-    : this.http.post(
-        this.apiUrl,
-        payload
-      );
+  const request$ = this.visitorExists
+  ? this.http.put(
+      `${this.apiUrl}/${raw.mobileNo}`,
+      payload
+    )
+  : this.http.post(
+      this.apiUrl,
+      payload
+    );
+
+    console.log('========== VISITOR SAVE ==========');
+  console.log('Mobile:', raw.mobileNo);
+  console.log('Visitor exists:', this.visitorExists);
+  console.log('Update mode:', this.isUpdateMode);
+  console.log('Request type:', this.visitorExists ? 'PUT' : 'POST');
+  console.log('Payload:', payload);
+  console.log('===================================');
 
 
   // =========================================
@@ -779,18 +800,35 @@ locationData: StateDistrict[] = [];
 }
 
   resetForm() {
-    const todayStr = new Date().toISOString().substring(0, 10);
-    this.visitorForm.reset({
-      registrationDate: todayStr,
-      modeOfVisit: { value: 'Unit', disabled: true }
-    });
-    this.photoDataUrl = null;
-    this.districts = [];
-    this.filteredEmployees = [];
-    this.isUpdateMode = false;
-    this.submittedOnce = false;
-    this.stopCamera();
-  }
+
+  const todayStr =
+    new Date().toISOString().substring(0, 10);
+
+  this.visitorForm.reset({
+    registrationDate: todayStr,
+    modeOfVisit: {
+      value: 'Unit',
+      disabled: true
+    }
+  });
+
+  this.photoDataUrl = null;
+  this.districts = [];
+  this.filteredEmployees = [];
+
+  this.isUpdateMode = false;
+  this.visitorExists = false;
+
+  this.mobileLookupCompleted = false;
+  this.mobileLookupInProgress = false;
+
+  this.checkInOutMeeting = null;
+  this.checkInOutStatus = null;
+
+  this.submittedOnce = false;
+
+  this.stopCamera();
+}
 
   private createMeetingRequest(raw: any): void {
 
