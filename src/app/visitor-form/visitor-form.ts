@@ -924,21 +924,17 @@ checkVisitorMeeting(mobileNo: string): void {
 determineCheckInOutStatus(response: any): void {
 
   // =====================================================
-  // ALREADY CHECKED OUT
+  // 1. ALREADY CHECKED OUT
   // =====================================================
 
-  if (
-    response.entryTime &&
-    response.exitTime
-  ) {
+  if (response.entryTime && response.exitTime) {
 
-    this.checkInOutStatus =
-      'ALREADY_CHECKED_OUT';
+    this.checkInOutStatus = 'ALREADY_CHECKED_OUT';
 
     Swal.fire({
       icon: 'info',
       title: 'Already Checked Out',
-      text: 'This visitor has already checked out.',
+      text: `This visitor has already checked out at ${this.formatTime(response.exitTime)}.`,
       confirmButtonText: 'OK'
     });
 
@@ -947,63 +943,37 @@ determineCheckInOutStatus(response: any): void {
 
 
   // =====================================================
-  // ALREADY CHECKED IN → CHECKOUT
+  // 2. ALREADY CHECKED IN
   // =====================================================
 
-  if (
-    response.entryTime &&
-    !response.exitTime
-  ) {
+  if (response.entryTime && !response.exitTime) {
 
-    this.checkInOutStatus =
-      'CHECK_OUT';
+    this.checkInOutStatus = 'CHECK_OUT';
 
-    const entryTime =
-      this.formatTime(response.entryTime);
-
-    Swal.fire({
-      icon: 'info',
-      title: 'Check-out Available',
-      text:
-        `Visitor checked in at ${entryTime}.`,
-      showCancelButton: true,
-      confirmButtonText: 'Check Out',
-      cancelButtonText: 'Cancel'
-    }).then(result => {
-
-      if (result.isConfirmed) {
-
-        this.performCheckInOut();
-
-      }
-
-    });
+    this.checkIfCheckoutAllowed(response);
 
     return;
   }
 
 
   // =====================================================
-  // NOT CHECKED IN → CHECK-IN
+  // 3. NOT CHECKED IN
   // =====================================================
 
   if (!response.entryTime) {
 
-    const approvedTime =
-      this.parseTime(
-        response.approvedMeetingTime
-      );
+    const approvedTime = this.parseTime(
+      response.approvedMeetingTime
+    );
 
     if (!approvedTime) {
 
-      this.checkInOutStatus =
-        'NOT_AVAILABLE';
+      this.checkInOutStatus = 'NOT_AVAILABLE';
 
       Swal.fire({
         icon: 'warning',
-        title: 'Time still available',
-        text:
-          'Check-in time available 10 mins before the approved time.',
+        title: 'Meeting Time Unavailable',
+        text: 'Unable to determine the approved meeting time.',
         confirmButtonText: 'OK'
       });
 
@@ -1031,46 +1001,13 @@ determineCheckInOutStatus(response: any): void {
       approvedTime.minutes;
 
 
+    // ===================================================
+    // CHECK-IN START TIME
+    // 15 MINUTES BEFORE APPROVED TIME
+    // ===================================================
+
     const checkInStart =
       approvedMinutes - 15;
-
-    const checkInEnd =
-      approvedMinutes + 15;
-
-
-    // ===================================================
-    // CHECK-IN AVAILABLE
-    // ===================================================
-
-    if (
-      currentMinutes >= checkInStart &&
-      currentMinutes <= checkInEnd
-    ) {
-
-      this.checkInOutStatus =
-        'CHECK_IN';
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Check-in Available',
-        html:
-          `Approved time: <b>${response.approvedMeetingTime}</b><br><br>` +
-          `Check-in is available now.`,
-        showCancelButton: true,
-        confirmButtonText: 'Check In',
-        cancelButtonText: 'Cancel'
-      }).then(result => {
-
-        if (result.isConfirmed) {
-
-          this.performCheckInOut();
-
-        }
-
-      });
-
-      return;
-    }
 
 
     // ===================================================
@@ -1079,16 +1016,19 @@ determineCheckInOutStatus(response: any): void {
 
     if (currentMinutes < checkInStart) {
 
-      this.checkInOutStatus =
-        'NOT_AVAILABLE';
+      this.checkInOutStatus = 'NOT_AVAILABLE';
+
+      const minutesRemaining =
+        checkInStart - currentMinutes;
 
       Swal.fire({
         icon: 'info',
-        title: 'Check-in Not Available',
+        title: 'Please Wait',
         html:
-          `Approved time: <b>${response.approvedMeetingTime}</b><br><br>` +
-          `Check-in will be available from ` +
-          `<b>${this.minutesToTime(checkInStart)}</b>.`,
+          `Approved meeting time: <b>${response.approvedMeetingTime}</b><br><br>` +
+          `Check-in will be automatic from ` +
+          `<b>${this.minutesToTime(checkInStart)}</b>.<br><br>` +
+          `Please wait approximately <b>${minutesRemaining} minutes</b>.`,
         confirmButtonText: 'OK'
       });
 
@@ -1097,25 +1037,240 @@ determineCheckInOutStatus(response: any): void {
 
 
     // ===================================================
-    // TOO LATE
-    // =====================================================
+    // WITHIN 15 MINUTES BEFORE APPROVED TIME
+    // OR APPROVED TIME HAS PASSED
+    // ===================================================
 
-    this.checkInOutStatus =
-      'NOT_AVAILABLE';
+    this.checkInOutStatus = 'CHECK_IN';
 
-    Swal.fire({
-      icon: 'warning',
-      title: 'Check-in Time Expired',
-      html:
-        `Approved time: <b>${response.approvedMeetingTime}</b><br><br>` +
-        `Check-in was available only until ` +
-        `<b>${this.minutesToTime(checkInEnd)}</b>.`,
-      confirmButtonText: 'OK'
-    });
+    this.performAutomaticCheckIn();
 
   }
-
 }
+
+performAutomaticCheckIn(): void {
+
+  if (!this.checkInOutMeeting) {
+    return;
+  }
+
+  const request = {
+    mobileNo: this.checkInOutMeeting.mobileNo,
+    meetingId: this.checkInOutMeeting.meetingId
+  };
+
+  this.checkInOutLoading = true;
+
+  this.http.post<any>(
+    `${environment.apiBaseUrl}/api/visitors/check-in-out`,
+    request
+  )
+  .subscribe({
+
+    next: (response) => {
+
+      this.checkInOutLoading = false;
+
+      this.checkInOutMeeting = response;
+
+      // ==========================================
+      // CHECK-IN SUCCESS
+      // ==========================================
+
+      if (
+        response.entryTime &&
+        !response.exitTime
+      ) {
+
+        this.checkInOutStatus = 'CHECK_OUT';
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Check-in Successful',
+          text:
+            `Visitor has been automatically checked in at ` +
+            `${this.formatTime(response.entryTime)}.`,
+          confirmButtonText: 'OK'
+        });
+
+        return;
+      }
+
+    },
+
+    error: (error) => {
+
+      this.checkInOutLoading = false;
+
+      console.error(
+        'Automatic check-in error:',
+        error
+      );
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Check-in Failed',
+        text:
+          error?.error?.message ||
+          'Unable to automatically check in the visitor.',
+        confirmButtonText: 'OK'
+      });
+
+    }
+
+  });
+}
+
+checkIfCheckoutAllowed(response: any): void {
+
+  if (!response.entryTime) {
+    return;
+  }
+
+  const entryDate = this.parseDateTime(response.entryTime);
+
+  if (!entryDate) {
+    console.error(
+      'Unable to parse entry time:',
+      response.entryTime
+    );
+
+    return;
+  }
+
+  const now = new Date();
+
+  const oneHourAfterEntry =
+    entryDate.getTime() + (60 * 60 * 1000);
+
+
+  // =====================================================
+  // ONE HOUR HAS PASSED
+  // =====================================================
+
+  if (now.getTime() >= oneHourAfterEntry) {
+
+    this.performAutomaticCheckout();
+
+    return;
+  }
+
+
+  // =====================================================
+  // ONE HOUR HAS NOT PASSED
+  // =====================================================
+
+  const remainingMilliseconds =
+    oneHourAfterEntry - now.getTime();
+
+  const remainingMinutes =
+    Math.ceil(
+      remainingMilliseconds / (60 * 1000)
+    );
+
+  Swal.fire({
+    icon: 'info',
+    title: 'Visitor Already Checked In',
+    html:
+      `Checked in at <b>${this.formatTime(response.entryTime)}</b>.<br><br>` +
+      `Automatic check-out will be available after ` +
+      `<b>${this.formatTime(
+        new Date(oneHourAfterEntry).toTimeString().substring(0, 5)
+      )}</b>.<br><br>` +
+      `Approximately <b>${remainingMinutes} minutes</b> remaining.`,
+    confirmButtonText: 'OK'
+  });
+}
+
+performAutomaticCheckout(): void {
+
+  if (!this.checkInOutMeeting) {
+    return;
+  }
+
+  const request = {
+    mobileNo: this.checkInOutMeeting.mobileNo,
+    meetingId: this.checkInOutMeeting.meetingId
+  };
+
+  this.checkInOutLoading = true;
+
+  this.http.post<any>(
+    `${environment.apiBaseUrl}/api/visitors/check-in-out`,
+    request
+  )
+  .subscribe({
+
+    next: (response) => {
+
+      this.checkInOutLoading = false;
+
+      this.checkInOutMeeting = response;
+
+      // ==========================================
+      // CHECK-OUT SUCCESS
+      // ==========================================
+
+      if (
+        response.entryTime &&
+        response.exitTime
+      ) {
+
+        this.checkInOutStatus =
+          'ALREADY_CHECKED_OUT';
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Check-out Successful',
+          text:
+            `Visitor has been automatically checked out at ` +
+            `${this.formatTime(response.exitTime)}.`,
+          confirmButtonText: 'OK'
+        });
+
+        return;
+      }
+
+    },
+
+    error: (error) => {
+
+      this.checkInOutLoading = false;
+
+      console.error(
+        'Automatic check-out error:',
+        error
+      );
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Check-out Failed',
+        text:
+          error?.error?.message ||
+          'Unable to automatically check out the visitor.',
+        confirmButtonText: 'OK'
+      });
+
+    }
+
+  });
+}
+
+parseDateTime(value: string): Date | null {
+
+  if (!value) {
+    return null;
+  }
+
+  const date = new Date(value);
+
+  if (isNaN(date.getTime())) {
+    return null;
+  }
+
+  return date;
+}
+
 performCheckInOut(): void {
 
   if (!this.checkInOutMeeting) {
