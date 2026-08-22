@@ -2,8 +2,8 @@ import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@an
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { State, City } from 'country-state-city';
-import type { IState, ICity } from 'country-state-city';
+import { State } from 'country-state-city';
+import type { IState } from 'country-state-city';
 import { AdminService } from '../services/admin.service';
 import { MeetingService } from '../services/meeting';
 import { of } from 'rxjs';
@@ -20,6 +20,11 @@ function to24Hour(hour12: string, period: string): string {
     if (h !== 12) h += 12;
   }
   return String(h).padStart(2, '0');
+}
+
+interface StateDistrict {
+  state: string;
+  districts: string[];
 }
 
 // Group-level validator: checks the combined date + hour + minute + period against "now"
@@ -99,7 +104,8 @@ checkInOutStatus:
   private readonly apiUrl = `${environment.apiBaseUrl}/api/visitors`;
 
   states: IState[] = [];
-  districts: ICity[] = [];
+districts: string[] = [];
+locationData: StateDistrict[] = [];
 
   sections: any[] = [];
   employees: any[] = [];
@@ -149,11 +155,34 @@ checkInOutStatus:
     }, { validators: futureDateTimeGroupValidator() });
 
     this.visitorForm.get('state')?.valueChanges.subscribe((stateCode: string) => {
-      this.districts = stateCode ? City.getCitiesOfState(this.countryCode, stateCode) : [];
-      if (!this.checkingMobile) {
-        this.visitorForm.get('district')?.setValue('');
-      }
-    });
+
+  this.districts = [];
+
+  if (!this.checkingMobile) {
+    this.visitorForm.get('district')?.setValue('');
+  }
+
+  if (!stateCode) {
+    return;
+  }
+
+  const selectedState = this.states.find(
+    state => state.isoCode === stateCode
+  );
+
+  if (!selectedState) {
+    return;
+  }
+
+  const stateData = this.locationData.find(
+    item => item.state === selectedState.name
+  );
+
+  if (stateData) {
+    this.districts = stateData.districts;
+  }
+
+});
 
     this.visitorForm.get('department')?.valueChanges.subscribe((sectionId: string) => {
       this.filteredEmployees = sectionId
@@ -165,9 +194,24 @@ checkInOutStatus:
     });
   }
 
+  loadLocationData(): void {
+  this.http.get<StateDistrict[]>('/assets/location-data.json')
+    .subscribe({
+      next: (data) => {
+        this.locationData = data;
+
+        console.log('Location data loaded:', this.locationData);
+      },
+      error: (error) => {
+        console.error('Failed to load location data:', error);
+      }
+    });
+}
+
   ngOnInit(): void {
     this.loadSections();
     this.loadEmployees();
+    this.loadLocationData();
   }
 
   get f() {

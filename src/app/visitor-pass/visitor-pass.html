@@ -106,15 +106,13 @@
              VISITOR PHOTO
         ============================================== -->
 
-        <div class="photo-container">
-
-          <img
-            [src]="getPhotoUrl(passData.mobileNo)"
-            alt="Visitor Photo"
-            (error)="onImageError($event)"
-          />
-
-        </div>
+       <div class="photo-container" *ngIf="passData.photo">
+  <img
+    [src]="getPhotoUrl(passData.mobileNo)"
+    alt="Visitor Photo"
+    (error)="onImageError($event)"
+  />
+</div>
 
 
         <!-- =============================================
@@ -382,35 +380,16 @@
 
       <div class="qr-section">
 
+  <div class="qr-container">
+    <img *ngIf="passData.qrCode" [src]="passData.qrCode" alt="Visitor Pass QR Code" />
+  </div>
 
-        <!-- QR CODE -->
+  <div class="pass-number-container">
+    <span class="pass-number-label">Pass No.</span>
+    <strong class="pass-number">{{ passData.passNo }}</strong>
+  </div>
 
-        <div class="qr-container">
-
-          <img
-            *ngIf="passData.qrCode"
-            [src]="passData.qrCode"
-            alt="Visitor Pass QR Code"
-          />
-
-        </div>
-
-
-        <!-- PASS NUMBER -->
-
-        <div class="pass-number-container">
-
-          <span class="pass-number-label">
-            Pass No.
-          </span>
-
-          <strong class="pass-number">
-            {{ passData.passNo }}
-          </strong>
-
-        </div>
-
-      </div>
+</div>
 
 
     </div>

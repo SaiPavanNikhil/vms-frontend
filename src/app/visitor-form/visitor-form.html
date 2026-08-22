@@ -16,7 +16,7 @@
 
     <div class="header">
       <span class="eyebrow">Front Desk</span>
-      <h2>Ignitia Infotech</h2>
+      <h2>Agray Infosolutions PVT. LTD.</h2>
     </div>
 
     <div class="body-grid">
@@ -441,7 +441,7 @@
                 <label>District <span class="needed">*</span></label>
                 <select formControlName="district" [attr.disabled]="!f['state'].value ? true : null">
                   <option value="">{{ f['state'].value ? 'Select District' : 'Select State first' }}</option>
-                  <option *ngFor="let d of districts" [value]="d.name">{{ d.name }}</option>
+                  <option *ngFor="let d of districts" [value]="d">{{ d}}</option>
                 </select>
                 <small class="error" *ngIf="f['district'].touched && f['district'].errors?.['required']">Required</small>
               </div>
