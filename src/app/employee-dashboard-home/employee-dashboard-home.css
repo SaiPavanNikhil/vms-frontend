@@ -7,6 +7,8 @@
   display: flex;
   background: #f5f7fa;
   color: #1d2939;
+
+  font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
 
@@ -15,7 +17,7 @@
 ========================================= */
 
 .sidebar {
-  width: 250px;
+  width: 200px;
   min-height: 100vh;
 
   display: flex;
@@ -37,40 +39,40 @@
 /* Logo */
 
 .sidebar-logo {
-  height: 82px;
+  height: 54px;
 
   display: flex;
   align-items: center;
 
-  padding: 0 22px;
+  padding: 0 16px;
 
   border-bottom: 1px solid #eaecf0;
 }
 
 .logo-box {
-  width: 42px;
-  height: 42px;
+  width: 32px;
+  height: 32px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 10px;
+  border-radius: 8px;
 
   background: #1769aa;
 
   color: #ffffff;
 
-  font-size: 17px;
+  font-size: 14px;
   font-weight: 700;
 
-  margin-right: 11px;
+  margin-right: 9px;
 }
 
 .logo-text h2 {
   margin: 0;
 
-  font-size: 19px;
+  font-size: 15px;
   font-weight: 700;
 
   color: #1d2939;
@@ -79,15 +81,15 @@
 .logo-text span {
   display: block;
 
-  margin-top: 2px;
+  margin-top: 1px;
 
-  font-size: 9px;
+  font-size: 8px;
 
   color: #98a2b3;
 
   text-transform: uppercase;
 
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
 }
 
 
@@ -96,26 +98,26 @@
 .sidebar-nav {
   flex: 1;
 
-  padding: 25px 14px;
+  padding: 12px 8px;
 }
 
 .nav-item {
-  height: 46px;
+  height: 38px;
 
   display: flex;
   align-items: center;
 
-  padding: 0 14px;
+  padding: 0 12px;
 
-  margin-bottom: 6px;
+  margin-bottom: 3px;
 
-  border-radius: 8px;
+  border-radius: 7px;
 
   color: #667085;
 
   text-decoration: none;
 
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
 
   cursor: pointer;
@@ -136,9 +138,9 @@
 }
 
 .nav-icon {
-  width: 30px;
+  width: 24px;
 
-  font-size: 17px;
+  font-size: 14px;
 
   display: inline-flex;
   align-items: center;
@@ -148,7 +150,7 @@
 /* Sidebar Bottom */
 
 .sidebar-bottom {
-  padding: 18px 14px;
+  padding: 8px;
 
   border-top: 1px solid #eaecf0;
 }
@@ -157,16 +159,20 @@
   display: flex;
   align-items: center;
 
-  margin-bottom: 15px;
+  margin-bottom: 7px;
 
-  padding: 8px;
+  padding: 7px;
+
+  border-radius: 7px;
+
+  background: #f9fafb;
 }
 
 .user-avatar {
-  width: 38px;
-  height: 38px;
+  width: 29px;
+  height: 29px;
 
-  min-width: 38px;
+  min-width: 29px;
 
   display: flex;
   align-items: center;
@@ -178,10 +184,10 @@
 
   color: #1769aa;
 
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 700;
 
-  margin-right: 10px;
+  margin-right: 8px;
 }
 
 .user-details {
@@ -191,7 +197,7 @@
 .user-details strong {
   display: block;
 
-  font-size: 13px;
+  font-size: 12px;
 
   color: #344054;
 
@@ -203,9 +209,9 @@
 .user-details span {
   display: block;
 
-  margin-top: 3px;
+  margin-top: 1px;
 
-  font-size: 11px;
+  font-size: 10px;
 
   color: #98a2b3;
 }
@@ -215,17 +221,21 @@
 
 .logout-button {
   width: 100%;
-  height: 40px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   border: 1px solid #eaecf0;
 
   background: #ffffff;
 
-  border-radius: 8px;
+  border-radius: 7px;
 
   color: #667085;
 
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
 
   cursor: pointer;
@@ -234,7 +244,7 @@
 }
 
 .logout-button span {
-  margin-right: 7px;
+  margin-right: 5px;
 }
 
 .logout-button:hover {
@@ -251,7 +261,7 @@
 .main-content {
   flex: 1;
 
-  margin-left: 250px;
+  margin-left: 200px;
 
   min-width: 0;
 }
@@ -262,13 +272,14 @@
 ========================================= */
 
 .top-header {
-  height: 82px;
+  height: 52px;
+  min-height: 52px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  padding: 0 32px;
+  padding: 0 20px;
 
   background: #ffffff;
 
@@ -278,7 +289,7 @@
 .header-left h1 {
   margin: 0;
 
-  font-size: 23px;
+  font-size: 16px;
 
   font-weight: 700;
 
@@ -286,9 +297,9 @@
 }
 
 .header-left p {
-  margin: 5px 0 0;
+  margin: 1px 0 0;
 
-  font-size: 13px;
+  font-size: 11px;
 
   color: #667085;
 }
@@ -297,27 +308,27 @@
   display: flex;
   align-items: center;
 
-  gap: 20px;
+  gap: 12px;
 }
 
 
 /* Notification */
 
 .notification-button {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
 
   position: relative;
 
   border: 1px solid #eaecf0;
 
-  border-radius: 9px;
+  border-radius: 8px;
 
   background: #ffffff;
 
   cursor: pointer;
 
-  font-size: 17px;
+  font-size: 13px;
 }
 
 .notification-button:hover {
@@ -327,11 +338,11 @@
 .notification-dot {
   position: absolute;
 
-  width: 7px;
-  height: 7px;
+  width: 5px;
+  height: 5px;
 
-  top: 8px;
-  right: 8px;
+  top: 6px;
+  right: 6px;
 
   border-radius: 50%;
 
@@ -349,8 +360,8 @@
 }
 
 .header-avatar {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
 
   display: flex;
   align-items: center;
@@ -362,16 +373,16 @@
 
   color: #1769aa;
 
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 700;
 
-  margin-right: 10px;
+  margin-right: 8px;
 }
 
 .header-user strong {
   display: block;
 
-  font-size: 13px;
+  font-size: 12px;
 
   color: #344054;
 }
@@ -379,9 +390,9 @@
 .header-user span {
   display: block;
 
-  margin-top: 2px;
+  margin-top: 0;
 
-  font-size: 11px;
+  font-size: 10px;
 
   color: #98a2b3;
 }
@@ -392,7 +403,9 @@
 ========================================= */
 
 .dashboard-content {
-  padding: 30px 32px;
+  padding: 18px 20px;
+
+  width: 100%;
 }
 
 
@@ -401,15 +414,15 @@
 ========================================= */
 
 .welcome-card {
-  min-height: 175px;
+  min-height: auto;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  padding: 30px 38px;
+  padding: 16px 22px;
 
-  border-radius: 14px;
+  border-radius: 11px;
 
   background: linear-gradient(
     135deg,
@@ -423,7 +436,7 @@
 
   position: relative;
 
-  margin-bottom: 25px;
+  margin-bottom: 16px;
 }
 
 .welcome-content {
@@ -435,21 +448,21 @@
 .welcome-label {
   display: inline-block;
 
-  margin-bottom: 9px;
+  margin-bottom: 5px;
 
   font-size: 10px;
 
   font-weight: 700;
 
-  letter-spacing: 1.2px;
+  letter-spacing: 1px;
 
   color: rgba(255, 255, 255, 0.7);
 }
 
 .welcome-card h2 {
-  margin: 0 0 9px;
+  margin: 0 0 5px;
 
-  font-size: 26px;
+  font-size: 19px;
 
   font-weight: 700;
 }
@@ -459,16 +472,16 @@
 
   max-width: 600px;
 
-  font-size: 13px;
+  font-size: 12px;
 
-  line-height: 1.6;
+  line-height: 1.5;
 
   color: rgba(255, 255, 255, 0.8);
 }
 
 .welcome-illustration {
-  width: 120px;
-  height: 120px;
+  width: 52px;
+  height: 52px;
 
   display: flex;
   align-items: center;
@@ -478,11 +491,13 @@
 
   background: rgba(255, 255, 255, 0.10);
 
-  font-size: 55px;
+  font-size: 23px;
 
   position: relative;
 
-  margin-right: 30px;
+  margin-right: 14px;
+
+  flex-shrink: 0;
 }
 
 
@@ -496,24 +511,26 @@
   grid-template-columns:
     repeat(4, minmax(0, 1fr));
 
-  gap: 18px;
+  gap: 12px;
 
-  margin-bottom: 25px;
+  margin-bottom: 16px;
+
+  width: 100%;
 }
 
 .stat-card {
-  min-height: 130px;
+  min-height: auto;
 
   display: flex;
   align-items: center;
 
-  padding: 22px;
+  padding: 14px;
 
   background: #ffffff;
 
   border: 1px solid #eaecf0;
 
-  border-radius: 12px;
+  border-radius: 10px;
 
   transition: all 0.2s ease;
 }
@@ -526,20 +543,20 @@
 }
 
 .stat-icon {
-  width: 48px;
-  height: 48px;
+  width: 36px;
+  height: 36px;
 
-  min-width: 48px;
+  min-width: 36px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 10px;
+  border-radius: 9px;
 
-  font-size: 21px;
+  font-size: 17px;
 
-  margin-right: 14px;
+  margin-right: 10px;
 }
 
 .visitors-icon {
@@ -561,7 +578,7 @@
 .stat-info span {
   display: block;
 
-  font-size: 12px;
+  font-size: 11px;
 
   color: #667085;
 }
@@ -569,9 +586,9 @@
 .stat-info strong {
   display: block;
 
-  margin-top: 4px;
+  margin-top: 3px;
 
-  font-size: 26px;
+  font-size: 20px;
 
   line-height: 1;
 
@@ -581,9 +598,9 @@
 .stat-info small {
   display: block;
 
-  margin-top: 5px;
+  margin-top: 3px;
 
-  font-size: 10px;
+  font-size: 9px;
 
   color: #98a2b3;
 }
@@ -596,19 +613,21 @@
 .dashboard-grid {
   display: grid;
 
-  grid-template-columns:
-    minmax(0, 1.7fr)
-    minmax(300px, 0.9fr);
+  grid-template-columns: minmax(0, 1fr);
 
-  gap: 20px;
+  gap: 16px;
+
+  width: 100%;
 }
 
 .dashboard-card {
+  width: 100%;
+
   background: #ffffff;
 
   border: 1px solid #eaecf0;
 
-  border-radius: 12px;
+  border-radius: 10px;
 
   overflow: hidden;
 }
@@ -619,13 +638,13 @@
 ========================================= */
 
 .card-header {
-  min-height: 78px;
+  min-height: auto;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  padding: 18px 22px;
+  padding: 12px 16px;
 
   border-bottom: 1px solid #eaecf0;
 }
@@ -633,7 +652,7 @@
 .card-header h3 {
   margin: 0;
 
-  font-size: 15px;
+  font-size: 14px;
 
   font-weight: 650;
 
@@ -641,9 +660,9 @@
 }
 
 .card-header p {
-  margin: 4px 0 0;
+  margin: 2px 0 0;
 
-  font-size: 11px;
+  font-size: 10px;
 
   color: #98a2b3;
 }
@@ -668,6 +687,8 @@
 
 .table-container {
   overflow-x: auto;
+
+  width: 100%;
 }
 
 table {
@@ -681,11 +702,11 @@ thead {
 }
 
 th {
-  padding: 12px 18px;
+  padding: 9px 16px;
 
   text-align: left;
 
-  font-size: 10px;
+  font-size: 9px;
 
   font-weight: 600;
 
@@ -693,13 +714,13 @@ th {
 
   text-transform: uppercase;
 
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
 
   white-space: nowrap;
 }
 
 td {
-  padding: 13px 18px;
+  padding: 10px 16px;
 
   border-top: 1px solid #f2f4f7;
 
@@ -716,14 +737,14 @@ td {
 }
 
 .visitor-avatar {
-  width: 30px;
-  height: 30px;
+  width: 27px;
+  height: 27px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  margin-right: 9px;
+  margin-right: 8px;
 
   border-radius: 50%;
 
@@ -741,11 +762,11 @@ td {
 .status {
   display: inline-block;
 
-  padding: 4px 8px;
+  padding: 3px 8px;
 
   border-radius: 20px;
 
-  font-size: 9px;
+  font-size: 10px;
 
   font-weight: 600;
 }
@@ -774,18 +795,18 @@ td {
 ========================================= */
 
 .quick-actions {
-  padding: 10px 15px 15px;
+  padding: 6px 10px 10px;
 }
 
 .quick-action {
   width: 100%;
 
-  min-height: 67px;
+  min-height: 52px;
 
   display: flex;
   align-items: center;
 
-  padding: 10px 8px;
+  padding: 7px 6px;
 
   border: none;
 
@@ -809,22 +830,22 @@ td {
 }
 
 .quick-icon {
-  width: 38px;
-  height: 38px;
+  width: 31px;
+  height: 31px;
 
-  min-width: 38px;
+  min-width: 31px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  margin-right: 11px;
+  margin-right: 9px;
 
-  border-radius: 8px;
+  border-radius: 7px;
 
   background: #f2f4f7;
 
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .quick-action div {
@@ -834,7 +855,7 @@ td {
 .quick-action strong {
   display: block;
 
-  font-size: 12px;
+  font-size: 11px;
 
   color: #344054;
 }
@@ -842,9 +863,9 @@ td {
 .quick-action small {
   display: block;
 
-  margin-top: 3px;
+  margin-top: 2px;
 
-  font-size: 10px;
+  font-size: 9px;
 
   color: #98a2b3;
 }
@@ -852,9 +873,9 @@ td {
 .arrow {
   color: #98a2b3;
 
-  font-size: 17px;
+  font-size: 15px;
 
-  margin-right: 5px;
+  margin-right: 4px;
 }
 
 
@@ -869,17 +890,13 @@ td {
       repeat(2, minmax(0, 1fr));
   }
 
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-
 }
 
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
 
   .sidebar {
-    width: 70px;
+    width: 60px;
   }
 
   .sidebar-logo {
@@ -922,20 +939,20 @@ td {
   }
 
   .logout-button span {
-    font-size: 17px;
+    font-size: 14px;
     margin: 0;
   }
 
   .main-content {
-    margin-left: 70px;
+    margin-left: 60px;
   }
 
   .dashboard-content {
-    padding: 22px;
+    padding: 14px;
   }
 
   .top-header {
-    padding: 0 22px;
+    padding: 0 14px;
   }
 
   .header-user > div:last-child {
@@ -943,20 +960,20 @@ td {
   }
 
   .welcome-card {
-    padding: 25px;
+    padding: 14px 16px;
   }
 
   .welcome-illustration {
-    width: 80px;
-    height: 80px;
-    font-size: 38px;
-    margin-right: 0;
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    margin-right: 10px;
   }
 
 }
 
 
-@media (max-width: 550px) {
+@media (max-width: 600px) {
 
   .stats-grid {
     grid-template-columns: 1fr;
@@ -971,23 +988,32 @@ td {
   }
 
   .dashboard-content {
-    padding: 15px;
+    padding: 12px;
   }
 
   .top-header {
-    padding: 0 15px;
+    padding: 0 12px;
+    height: 48px;
+    min-height: 48px;
+  }
+
+  .header-left h1 {
+    font-size: 14px;
   }
 
   .welcome-card {
-    min-height: 160px;
-  }
-
-  .welcome-card h2 {
-    font-size: 21px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 
   .welcome-illustration {
     display: none;
+  }
+
+  .card-header {
+    flex-wrap: wrap;
+    gap: 5px;
   }
 
 }

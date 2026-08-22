@@ -15,13 +15,15 @@ import { EmployeeMeeting } from './employee-meeting/employee-meeting';
 import { ParticipantResponse } from './participant-response/participant-response';
 import { VisitorCheckInOut } from './visitor-check-in-out/visitor-check-in-out';
 import { VisitorPass } from './visitor-pass/visitor-pass';
+import { EmployeeMeetingPass } from './employee-meeting-pass/employee-meeting-pass';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'admin-dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: 'Visitor-Form', pathMatch: 'full' },
   // { path: 'home-page', component: HomeComponent },
   { path: 'admin', component: AdminPage },
   { path: 'Visitor-Form', component: VisitorForm },
   { path: 'HostApproval', component: HostApproval },
+    { path: 'employee-pass', component: EmployeeMeetingPass },
   {
     path: 'visitor-pass/:meetingId',
     component: VisitorPass

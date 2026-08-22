@@ -1,0 +1,87 @@
+<div class="visitor-pass-page">
+
+  <div class="loading-container" *ngIf="loading">
+    <div class="loader"></div>
+    <p>Loading meeting pass...</p>
+  </div>
+
+  <div class="error-container" *ngIf="!loading && errorMessage">
+    <div class="error-icon">!</div>
+    <h2>Pass Unavailable</h2>
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div class="visitor-pass" *ngIf="!loading && passData">
+
+    <div class="pass-header">
+      <div class="header-building-icon">
+        <span class="building building-one">▮</span>
+        <span class="building building-two">▮</span>
+        <span class="building building-three">▮</span>
+      </div>
+      <div class="header-content">
+        <h1>GATE PASS</h1>
+        <p>Visitor Management System</p>
+      </div>
+    </div>
+
+    <div class="pass-body">
+      <div class="visitor-details">
+        <div class="detail-row">
+          <span class="detail-label">Participant Name</span>
+          <span class="detail-separator">:</span>
+          <span class="detail-value">{{ passData.participantName }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Organisation</span>
+          <span class="detail-separator">:</span>
+          <span class="detail-value">{{ passData.participantOrganisation || '-' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Meeting Title</span>
+          <span class="detail-separator">:</span>
+          <span class="detail-value">{{ passData.meetingTitle }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Contact No.</span>
+          <span class="detail-separator">:</span>
+          <span class="detail-value">{{ passData.mobileNo }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pass-divider"></div>
+
+    <div class="visit-information">
+      <div class="visit-row">
+        <div class="visit-icon">📅</div>
+        <span class="visit-label">Meeting Date</span>
+        <span class="visit-separator">:</span>
+        <span class="visit-value">{{ formatDate(passData.meetingDate) }} at {{ passData.meetingTime }}</span>
+      </div>
+
+      <div class="visit-row">
+        <div class="visit-icon">👤</div>
+        <span class="visit-label">Host / Organizer</span>
+        <span class="visit-separator">:</span>
+        <div class="host-value">
+          <strong>{{ passData.hostName }}</strong>
+        </div>
+      </div>
+
+      <div class="visit-row">
+        <div class="visit-icon pass-icon">#</div>
+        <span class="visit-label">Pass No.</span>
+        <span class="visit-separator">:</span>
+        <strong class="pass-number">{{ passData.passNo }}</strong>
+      </div>
+    </div>
+
+    <div class="pass-footer">
+      <p>Please show this pass at the security desk</p>
+      <p>Thank You!</p>
+    </div>
+
+  </div>
+
+</div>

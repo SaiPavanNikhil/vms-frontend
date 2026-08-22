@@ -23,6 +23,7 @@ interface EmployeeMeetingRequest {
   meetingPurpose: string;
   meetingDate: string;
   meetingTime: string;
+  venue: string;
   participants: Participant[];
 }
 
@@ -51,7 +52,7 @@ interface Visitor {
 })
 export class EmployeeMeeting implements OnInit {
 
-  private apiUrl = 'http://localhost:8080';
+  // private apiUrl = 'http://localhost:8080';
 
 
   // ==================================================
@@ -74,6 +75,9 @@ export class EmployeeMeeting implements OnInit {
 
   minMeetingDate: string = '';
   minMeetingTime: string = '';
+  meetingVenue = '';
+
+  purposeWordCount: number = 0;
 
 
   // ==================================================
@@ -260,7 +264,7 @@ export class EmployeeMeeting implements OnInit {
     // ==========================================
 
     this.http.get<Visitor>(
-      `${this.apiUrl}/api/visitors/${mobileNo}`
+      `${environment.apiBaseUrl}/api/visitors/${mobileNo}`
     )
     .pipe(
 
@@ -634,7 +638,7 @@ export class EmployeeMeeting implements OnInit {
 
 
     this.http.put<Visitor>(
-      `${this.apiUrl}/api/visitors/${mobileNo}`,
+      `${environment.apiBaseUrl}/api/visitors/${mobileNo}`,
       visitorData
     )
     .pipe(
@@ -742,36 +746,6 @@ export class EmployeeMeeting implements OnInit {
     }
 
 
-    // if (!this.visitorAddress.trim()) {
-
-    //   alert(
-    //     'Please enter visitor address.'
-    //   );
-
-    //   return;
-    // }
-
-
-    // if (!this.visitorState.trim()) {
-
-    //   alert(
-    //     'Please enter visitor state.'
-    //   );
-
-    //   return;
-    // }
-
-
-    // if (!this.visitorDistrict.trim()) {
-
-    //   alert(
-    //     'Please enter visitor district.'
-    //   );
-
-    //   return;
-    // }
-
-
     // ==========================================
     // PAYLOAD
     // ==========================================
@@ -822,7 +796,7 @@ export class EmployeeMeeting implements OnInit {
 
 
     this.http.post<Visitor>(
-      `${this.apiUrl}/api/visitors`,
+      `${environment.apiBaseUrl}/api/visitors`,
       visitorData
     )
     .pipe(
@@ -1018,9 +992,14 @@ export class EmployeeMeeting implements OnInit {
 
     this.meetingTitle = '';
 
+    this.meetingPurpose = '';
+
+    this.purposeWordCount = 0;
+
     this.meetingDate = '';
 
     this.meetingTime = '';
+    this.meetingVenue = '';
 
     this.resetVisitorForm();
 
@@ -1055,10 +1034,20 @@ export class EmployeeMeeting implements OnInit {
     }
 
 
-    if (!this.meetingPurpose) {
+    if (!this.meetingPurpose.trim()) {
 
       alert(
         'Please enter the meeting purpose.'
+      );
+
+      return;
+    }
+
+
+    if (this.purposeWordCount > 100) {
+
+      alert(
+        'Meeting purpose cannot exceed 100 words.'
       );
 
       return;
@@ -1123,7 +1112,7 @@ export class EmployeeMeeting implements OnInit {
         this.meetingTitle.trim(),
 
       meetingPurpose:
-        this.meetingPurpose,
+        this.meetingPurpose.trim(),
 
       meetingDate:
         this.meetingDate,
@@ -1132,7 +1121,10 @@ export class EmployeeMeeting implements OnInit {
         this.meetingTime,
 
       participants:
-        this.participants
+        this.participants,
+        
+      venue: 
+        this.meetingVenue,
 
     };
 
@@ -1205,81 +1197,133 @@ export class EmployeeMeeting implements OnInit {
   }
 
   // ==================================================
-// FORMAT DATE FOR HTML DATE INPUT
-// ==================================================
+  // MEETING PURPOSE — 100 WORD LIMIT
+  // ==================================================
 
-private formatDateForInput(date: Date): string {
+  onMeetingPurposeChange(): void {
 
-  const year = date.getFullYear();
+    const words = this.meetingPurpose
+      .trim()
+      .split(/\s+/)
+      .filter(w => w.length > 0);
 
-  const month =
-    String(date.getMonth() + 1).padStart(2, '0');
+    if (words.length > 100) {
 
-  const day =
-    String(date.getDate()).padStart(2, '0');
+      // Truncate to first 100 words
+      this.meetingPurpose = words.slice(0, 100).join(' ');
 
-  return `${year}-${month}-${day}`;
-}
+      this.purposeWordCount = 100;
 
-// ==================================================
-// GET CURRENT TIME FOR HTML TIME INPUT
-// ==================================================
-
-private updateMinMeetingTime(): void {
-
-  const now = new Date();
-
-  const hours =
-    String(now.getHours()).padStart(2, '0');
-
-  const minutes =
-    String(now.getMinutes()).padStart(2, '0');
-
-  this.minMeetingTime =
-    `${hours}:${minutes}`;
-}
-
-// ==================================================
-// MEETING DATE CHANGED
-// ==================================================
-
-onMeetingDateChange(): void {
-
-  // ------------------------------------------
-  // Update current minimum time
-  // ------------------------------------------
-
-  this.updateMinMeetingTime();
-
-
-  // ------------------------------------------
-  // If selected date is today,
-  // prevent selecting earlier time
-  // ------------------------------------------
-
-  if (
-    this.meetingDate ===
-    this.minMeetingDate
-  ) {
-
-    if (
-      this.meetingTime &&
-      this.meetingTime < this.minMeetingTime
-    ) {
-
-      this.meetingTime = '';
-
+      return;
     }
 
-    return;
+    this.purposeWordCount = this.meetingPurpose.trim() === ''
+      ? 0
+      : words.length;
   }
 
 
-  // ------------------------------------------
-  // Future date
-  // ------------------------------------------
+  // ==================================================
+  // MEETING TIME CHANGED — BLOCK PAST TIME
+  // ==================================================
 
-  this.minMeetingTime = '00:00';
-}
+  onMeetingTimeChange(): void {
+
+    // Only relevant when the selected date is today
+    if (this.meetingDate !== this.minMeetingDate) {
+      return;
+    }
+
+    // Refresh "now" each time, since minutes tick forward
+    this.updateMinMeetingTime();
+
+    if (this.meetingTime && this.meetingTime < this.minMeetingTime) {
+
+      alert(
+        'Selected time has already passed. Please choose a future time.'
+      );
+
+      this.meetingTime = '';
+    }
+  }
+
+
+  // ==================================================
+  // FORMAT DATE FOR HTML DATE INPUT
+  // ==================================================
+
+  private formatDateForInput(date: Date): string {
+
+    const year = date.getFullYear();
+
+    const month =
+      String(date.getMonth() + 1).padStart(2, '0');
+
+    const day =
+      String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
+
+  // ==================================================
+  // GET CURRENT TIME FOR HTML TIME INPUT
+  // ==================================================
+
+  private updateMinMeetingTime(): void {
+
+    const now = new Date();
+
+    const hours =
+      String(now.getHours()).padStart(2, '0');
+
+    const minutes =
+      String(now.getMinutes()).padStart(2, '0');
+
+    this.minMeetingTime =
+      `${hours}:${minutes}`;
+  }
+
+  // ==================================================
+  // MEETING DATE CHANGED
+  // ==================================================
+
+  onMeetingDateChange(): void {
+
+    // ------------------------------------------
+    // Update current minimum time
+    // ------------------------------------------
+
+    this.updateMinMeetingTime();
+
+
+    // ------------------------------------------
+    // If selected date is today,
+    // prevent selecting earlier time
+    // ------------------------------------------
+
+    if (
+      this.meetingDate ===
+      this.minMeetingDate
+    ) {
+
+      if (
+        this.meetingTime &&
+        this.meetingTime < this.minMeetingTime
+      ) {
+
+        this.meetingTime = '';
+
+      }
+
+      return;
+    }
+
+
+    // ------------------------------------------
+    // Future date
+    // ------------------------------------------
+
+    this.minMeetingTime = '00:00';
+  }
 
 }

@@ -65,78 +65,6 @@
 
       </a>
 
-
-      <!-- Visitors -->
-
-      <a
-        class="nav-item"
-        routerLink="/employee-dashboard/visitors"
-        routerLinkActive="active">
-
-        <span class="nav-icon">
-          👥
-        </span>
-
-        <span>
-          Visitors
-        </span>
-
-      </a>
-
-
-      <!-- Appointments -->
-
-      <a
-        class="nav-item"
-        routerLink="/employee-dashboard/appointments"
-        routerLinkActive="active">
-
-        <span class="nav-icon">
-          📋
-        </span>
-
-        <span>
-          Appointments
-        </span>
-
-      </a>
-
-
-      <!-- Visitor Passes -->
-
-      <a
-        class="nav-item"
-        routerLink="/employee-dashboard/passes"
-        routerLinkActive="active">
-
-        <span class="nav-icon">
-          🪪
-        </span>
-
-        <span>
-          Visitor Passes
-        </span>
-
-      </a>
-
-
-      <!-- Reports -->
-
-      <a
-        class="nav-item"
-        routerLink="/employee-dashboard/reports"
-        routerLinkActive="active">
-
-        <span class="nav-icon">
-          📊
-        </span>
-
-        <span>
-          Reports
-        </span>
-
-      </a>
-
     </nav>
 
 
@@ -200,78 +128,21 @@
          HEADER
     ======================================== -->
 
-    <header class="top-header">
-
-      <div class="header-left">
-
-        <h1>
-          VMS Dashboard
-        </h1>
-
-        <p>
-          Welcome back, {{ employeeName }}
-        </p>
-
-      </div>
-
-
-      <!-- Header Right -->
-
-      <div class="header-right">
-
-
-        <!-- Notification -->
-
-        <button
-          type="button"
-          class="notification-button">
-
-          🔔
-
-          <span class="notification-dot"></span>
-
-        </button>
-
-
-        <!-- Employee -->
-
-        <div class="header-user">
-
-          <div class="header-avatar">
-
-            {{ employeeName.charAt(0).toUpperCase() }}
-
-          </div>
-
-
-          <div>
-
-            <strong>
-              {{ employeeName }}
-            </strong>
-
-            <span>
-              Employee
-            </span>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </header>
 
 
     <!-- =======================================
          CHILD CONTENT
-         
+
          EmployeeDashboardHome
          EmployeeMeeting
          Future modules
     ======================================== -->
 
-    <router-outlet></router-outlet>
+    <div class="page-body">
+
+      <router-outlet></router-outlet>
+
+    </div>
 
 
   </div>

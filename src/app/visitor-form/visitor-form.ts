@@ -79,6 +79,20 @@ export class VisitorForm implements OnInit {
 
   isUpdateMode = false;
 
+  checkInOutLoading = false;
+  loading = false;
+
+checkInOutMeeting: any = null;
+
+checkInOutStatus:
+  | 'CHECK_IN'
+  | 'CHECK_OUT'
+  | 'NOT_AVAILABLE'
+  | 'ALREADY_CHECKED_OUT'
+  | null = null;
+
+  mobileLookupInProgress = false;
+
   private stream: MediaStream | null = null;
 
   private readonly countryCode = 'IN';
@@ -122,7 +136,8 @@ export class VisitorForm implements OnInit {
       // Default mode of visit is "Unit" (Visit) and locked — not user-editable
       modeOfVisit: [{ value: 'Unit', disabled: true }, Validators.required],
       meetPersonName: ['', Validators.required],
-      purposeOfVisit: ['', [Validators.required, Validators.maxLength(30)]],
+      purposeOfVisit: [{ value: 'offical' }, [Validators.required, Validators.maxLength(30)]],
+      descriptionOfVisit: '',
       // Split into a native date input + two <select> dropdowns for hour/minute
       // (fixes Firefox not showing any clickable time-selection UI).
       proposedMeetDate: ['', Validators.required],
@@ -227,60 +242,144 @@ export class VisitorForm implements OnInit {
 
   }
 
-  onMobileBlur() {
-    const mobileNo = this.f['mobileNo'].value;
-    if (!mobileNo || this.f['mobileNo'].invalid) {
-      return;
-    }
+  onMobileBlur(): void {
 
-    this.checkingMobile = true;
+  const mobileNo =
+    this.visitorForm.get('mobileNo')?.value?.trim();
 
-    this.http.get<any>(`${this.apiUrl}/${mobileNo}`).pipe(
-      timeout(6000),
-      catchError(() => {
-        this.isUpdateMode = false;
-        return of(null);
-      }),
-      finalize(() => {
-        this.checkingMobile = false;
-      })
-    ).subscribe((visitor) => {
-      if (!visitor) {
-        return;
-      }
+  if (!mobileNo || mobileNo.length !== 10) {
+    return;
+  }
+
+
+  // =====================================================
+  // PREVENT DUPLICATE REQUESTS
+  // =====================================================
+
+  if (this.mobileLookupInProgress) {
+    return;
+  }
+
+  this.mobileLookupInProgress = true;
+
+
+  // =====================================================
+  // API 1
+  // FIND EXISTING VISITOR
+  // =====================================================
+
+  this.loading = true;
+
+  this.http.get<any>(
+    `${this.apiUrl}/${mobileNo}`
+  )
+  .subscribe({
+
+    next: (visitor) => {
+
+      this.mobileLookupInProgress = false;
+      this.loading = false;
+
+
+      // =================================================
+      // VISITOR EXISTS
+      // =================================================
 
       this.isUpdateMode = true;
 
+
       this.visitorForm.patchValue({
-        firstName: visitor.firstName,
-        lastName: visitor.lastName,
-        email: visitor.email,
-        organisation: visitor.organisation,
-        organisationAddress: visitor.address,
-        designation: visitor.designation,
-        state: visitor.state,
-        purposeOfVisit: visitor.purposeOfVisit
+
+        firstName:
+          visitor.firstName || '',
+
+        lastName:
+          visitor.lastName || '',
+
+        address:
+          visitor.address || '',
+
+        state:
+          visitor.state || '',
+
+        district:
+          visitor.district || '',
+
+        organisation:
+          visitor.organisation || '',
+
+        email:
+          visitor.email || '',
+
+        designation:
+          visitor.designation || '',
+
+        purposeOfVisit:
+          visitor.purposeOfVisit || '',
+
+        modeOfVisit:
+          visitor.modeOfVisit || '',
+
+        descriptionOfVisit:
+          visitor.descriptionOfVisit || ''
+
       });
 
-      this.districts = visitor.state ? City.getCitiesOfState(this.countryCode, visitor.state) : [];
-      this.visitorForm.patchValue({ district: visitor.district });
 
-      if (visitor.department) {
-        this.filteredEmployees = this.employees.filter(e => e.sectionId === visitor.department);
-        this.visitorForm.patchValue({
-          department: visitor.department,
-          meetPersonName: visitor.meetPersonName
+      // =================================================
+      // API 2
+      // CHECK CHECK-IN / CHECK-OUT
+      // =================================================
+
+      this.checkVisitorMeeting(mobileNo);
+
+    },
+
+
+    error: (error) => {
+
+      this.mobileLookupInProgress = false;
+      this.loading = false;
+
+
+      // =================================================
+      // VISITOR DOES NOT EXIST
+      // =================================================
+
+      this.isUpdateMode = false;
+
+
+      if (
+        error?.status === 404 ||
+        error?.status === 400
+      ) {
+
+        Swal.fire({
+          icon: 'info',
+          title: 'New Visitor',
+          text:
+            'No visitor is registered with this mobile number.',
+          confirmButtonText: 'OK'
         });
+
+        return;
       }
 
-      if (visitor.photo) {
-        this.photoDataUrl = null;
-      }
 
-      this.cdr.detectChanges();
-    });
-  }
+      Swal.fire({
+        icon: 'error',
+        title: 'Unable to Load Visitor',
+        text:
+          error?.error?.message ||
+          'Unable to retrieve visitor details.',
+        confirmButtonText: 'OK'
+      });
 
+    }
+
+  });
+
+}
   // ---------- Live selfie capture ----------
 
   onAvatarClick(): void {
@@ -569,6 +668,7 @@ export class VisitorForm implements OnInit {
       ? `${selectedEmployee.firstName} ${selectedEmployee.lastName ?? ''}`.trim()
       : '',
     purposeOfVisit: raw.purposeOfVisit,
+    descriptionOfVisit: raw.descriptionOfVisit,
     proposedMeetDateTime,
     photoDataUrl: this.photoDataUrl
   };
@@ -727,4 +827,474 @@ export class VisitorForm implements OnInit {
 
     });
 }
+
+checkVisitorMeeting(mobileNo: string): void {
+
+  // Prevent duplicate calls
+  if (this.checkInOutLoading) {
+    return;
+  }
+
+  this.checkInOutLoading = true;
+
+  this.http.get<any>(
+    `${environment.apiBaseUrl}/api/visitor-checkin/search/${mobileNo}`
+  )
+  .subscribe({
+
+    next: (response) => {
+
+      this.checkInOutLoading = false;
+
+      this.checkInOutMeeting = response;
+
+      this.determineCheckInOutStatus(response);
+    },
+
+    error: (error) => {
+
+      this.checkInOutLoading = false;
+
+      this.checkInOutMeeting = null;
+      this.checkInOutStatus = 'NOT_AVAILABLE';
+
+      console.log(
+        'No check-in/check-out meeting:',
+        error
+      );
+
+      // IMPORTANT:
+      // DO NOT show "New Visitor" here.
+      //
+      // Visitor already exists.
+      // It simply means there is no accepted meeting
+      // available for check-in/check-out today.
+
+      return;
+    }
+
+  });
+
+}
+
+determineCheckInOutStatus(response: any): void {
+
+  // =====================================================
+  // ALREADY CHECKED OUT
+  // =====================================================
+
+  if (
+    response.entryTime &&
+    response.exitTime
+  ) {
+
+    this.checkInOutStatus =
+      'ALREADY_CHECKED_OUT';
+
+    Swal.fire({
+      icon: 'info',
+      title: 'Already Checked Out',
+      text: 'This visitor has already checked out.',
+      confirmButtonText: 'OK'
+    });
+
+    return;
+  }
+
+
+  // =====================================================
+  // ALREADY CHECKED IN → CHECKOUT
+  // =====================================================
+
+  if (
+    response.entryTime &&
+    !response.exitTime
+  ) {
+
+    this.checkInOutStatus =
+      'CHECK_OUT';
+
+    const entryTime =
+      this.formatTime(response.entryTime);
+
+    Swal.fire({
+      icon: 'info',
+      title: 'Check-out Available',
+      text:
+        `Visitor checked in at ${entryTime}.`,
+      showCancelButton: true,
+      confirmButtonText: 'Check Out',
+      cancelButtonText: 'Cancel'
+    }).then(result => {
+
+      if (result.isConfirmed) {
+
+        this.performCheckInOut();
+
+      }
+
+    });
+
+    return;
+  }
+
+
+  // =====================================================
+  // NOT CHECKED IN → CHECK-IN
+  // =====================================================
+
+  if (!response.entryTime) {
+
+    const approvedTime =
+      this.parseTime(
+        response.approvedMeetingTime
+      );
+
+    if (!approvedTime) {
+
+      this.checkInOutStatus =
+        'NOT_AVAILABLE';
+
+      Swal.fire({
+        icon: 'warning',
+        title: 'Time still available',
+        text:
+          'Check-in time available 10 mins before the approved time.',
+        confirmButtonText: 'OK'
+      });
+
+      return;
+    }
+
+
+    // ===================================================
+    // CURRENT TIME
+    // ===================================================
+
+    const now = new Date();
+
+    const currentMinutes =
+      now.getHours() * 60 +
+      now.getMinutes();
+
+
+    // ===================================================
+    // APPROVED TIME
+    // ===================================================
+
+    const approvedMinutes =
+      approvedTime.hours * 60 +
+      approvedTime.minutes;
+
+
+    const checkInStart =
+      approvedMinutes - 15;
+
+    const checkInEnd =
+      approvedMinutes + 15;
+
+
+    // ===================================================
+    // CHECK-IN AVAILABLE
+    // ===================================================
+
+    if (
+      currentMinutes >= checkInStart &&
+      currentMinutes <= checkInEnd
+    ) {
+
+      this.checkInOutStatus =
+        'CHECK_IN';
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Check-in Available',
+        html:
+          `Approved time: <b>${response.approvedMeetingTime}</b><br><br>` +
+          `Check-in is available now.`,
+        showCancelButton: true,
+        confirmButtonText: 'Check In',
+        cancelButtonText: 'Cancel'
+      }).then(result => {
+
+        if (result.isConfirmed) {
+
+          this.performCheckInOut();
+
+        }
+
+      });
+
+      return;
+    }
+
+
+    // ===================================================
+    // TOO EARLY
+    // ===================================================
+
+    if (currentMinutes < checkInStart) {
+
+      this.checkInOutStatus =
+        'NOT_AVAILABLE';
+
+      Swal.fire({
+        icon: 'info',
+        title: 'Check-in Not Available',
+        html:
+          `Approved time: <b>${response.approvedMeetingTime}</b><br><br>` +
+          `Check-in will be available from ` +
+          `<b>${this.minutesToTime(checkInStart)}</b>.`,
+        confirmButtonText: 'OK'
+      });
+
+      return;
+    }
+
+
+    // ===================================================
+    // TOO LATE
+    // =====================================================
+
+    this.checkInOutStatus =
+      'NOT_AVAILABLE';
+
+    Swal.fire({
+      icon: 'warning',
+      title: 'Check-in Time Expired',
+      html:
+        `Approved time: <b>${response.approvedMeetingTime}</b><br><br>` +
+        `Check-in was available only until ` +
+        `<b>${this.minutesToTime(checkInEnd)}</b>.`,
+      confirmButtonText: 'OK'
+    });
+
+  }
+
+}
+performCheckInOut(): void {
+
+  if (!this.checkInOutMeeting) {
+    return;
+  }
+
+
+  const request = {
+
+    mobileNo:
+      this.checkInOutMeeting.mobileNo,
+
+    meetingId:
+      this.checkInOutMeeting.meetingId
+
+  };
+
+
+  this.checkInOutLoading = true;
+
+
+  this.http.post<any>(
+    `${environment.apiBaseUrl}/api/visitors/check-in-out`,
+    request
+  )
+  .subscribe({
+
+    next: (response) => {
+
+      this.checkInOutLoading = false;
+
+      this.checkInOutMeeting =
+        response;
+
+
+      // ==============================================
+      // CHECK-IN SUCCESS
+      // ==============================================
+
+      if (
+        response.entryTime &&
+        !response.exitTime
+      ) {
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Check-in Successful',
+          text:
+            `Visitor checked in at ${this.formatTime(response.entryTime)}.`,
+          confirmButtonText: 'OK'
+        });
+
+        return;
+      }
+
+
+      // ==============================================
+      // CHECK-OUT SUCCESS
+      // ==============================================
+
+      if (
+        response.entryTime &&
+        response.exitTime
+      ) {
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Check-out Successful',
+          text:
+            `Visitor checked out at ${this.formatTime(response.exitTime)}.`,
+          confirmButtonText: 'OK'
+        });
+
+      }
+
+    },
+
+    error: (error) => {
+
+      this.checkInOutLoading = false;
+
+      console.error(
+        'Check-in / Check-out error:',
+        error
+      );
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Unable to Process',
+        text:
+          error?.error?.message ||
+          'Unable to process check-in/check-out.',
+        confirmButtonText: 'OK'
+      });
+
+    }
+
+  });
+
+}
+
+parseTime(
+  time: string
+): { hours: number; minutes: number } | null {
+
+  if (!time) {
+    return null;
+  }
+
+  const value =
+    time.trim().toUpperCase();
+
+  const match =
+    value.match(
+      /^(\d{1,2}):(\d{2})\s*(AM|PM)$/
+    );
+
+  if (!match) {
+    return null;
+  }
+
+  let hours =
+    Number(match[1]);
+
+  const minutes =
+    Number(match[2]);
+
+  const period =
+    match[3];
+
+
+  if (period === 'AM' && hours === 12) {
+    hours = 0;
+  }
+
+  if (period === 'PM' && hours !== 12) {
+    hours += 12;
+  }
+
+
+  return {
+    hours,
+    minutes
+  };
+
+}
+
+minutesToTime(
+  totalMinutes: number
+): string {
+
+  totalMinutes =
+    ((totalMinutes % 1440) + 1440) % 1440;
+
+  let hours =
+    Math.floor(totalMinutes / 60);
+
+  const minutes =
+    totalMinutes % 60;
+
+  const period =
+    hours >= 12 ? 'PM' : 'AM';
+
+
+  if (hours === 0) {
+    hours = 12;
+  }
+  else if (hours > 12) {
+    hours -= 12;
+  }
+
+
+  return (
+    `${hours.toString().padStart(2, '0')}:` +
+    `${minutes.toString().padStart(2, '0')} ` +
+    period
+  );
+
+}
+
+formatTime(time: string): string {
+
+  if (!time) {
+    return '';
+  }
+
+  // Already formatted like 04:25 PM
+  if (
+    time.includes('AM') ||
+    time.includes('PM')
+  ) {
+    return time;
+  }
+
+  const parts =
+    time.split(':');
+
+  if (parts.length < 2) {
+    return time;
+  }
+
+  let hours =
+    Number(parts[0]);
+
+  const minutes =
+    Number(parts[1]);
+
+  const period =
+    hours >= 12 ? 'PM' : 'AM';
+
+  if (hours === 0) {
+    hours = 12;
+  }
+  else if (hours > 12) {
+    hours -= 12;
+  }
+
+  return (
+    `${hours.toString().padStart(2, '0')}:` +
+    `${minutes.toString().padStart(2, '0')} ` +
+    period
+  );
+
+}
+
 }

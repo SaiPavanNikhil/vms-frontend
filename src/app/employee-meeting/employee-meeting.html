@@ -91,9 +91,13 @@
         />
 
       </div>
-      <div class="form-group">
 
-        <label for="meetingTitle">
+
+      <!-- Meeting Purpose -->
+
+      <div class="form-group full-width">
+
+        <label for="meetingPurpose">
 
           Meeting Purpose
 
@@ -101,14 +105,18 @@
 
         </label>
 
-        <input
-          id="meetingTitle"
-          type="text"
-          name="meetingTitle"
+        <textarea
+          id="meetingPurpose"
+          name="meetingPurpose"
           [(ngModel)]="meetingPurpose"
-          placeholder="Enter meeting title"
-          maxlength="100"
-        />
+          (ngModelChange)="onMeetingPurposeChange()"
+          placeholder="Enter meeting purpose (max 100 words)"
+          rows="3">
+        </textarea>
+
+        <small class="word-count-hint">
+          {{ purposeWordCount }} / 100 words
+        </small>
 
       </div>
 
@@ -155,9 +163,33 @@
           name="meetingTime"
           [(ngModel)]="meetingTime"
           [min]="minMeetingTime"
+          (ngModelChange)="onMeetingTimeChange()"
         />
 
       </div>
+
+<!-- Venue -->
+
+<div class="form-group">
+
+  <label for="meetingVenue">
+
+    Venue
+
+    <span class="required">*</span>
+
+  </label>
+
+  <input
+    id="meetingVenue"
+    type="text"
+    name="meetingVenue"
+    [(ngModel)]="meetingVenue"
+    placeholder="Enter meeting venue"
+    maxlength="255"
+  />
+
+</div>
 
     </div>
 
@@ -227,14 +259,6 @@
             autocomplete="off"
           />
 
-
-          <!-- <small class="search-hint">
-
-            Visitor registration will be searched
-            automatically after 10 digits.
-
-          </small> -->
-
         </div>
 
 
@@ -253,19 +277,6 @@
         </div>
 
       </div>
-
-
-      <!-- ====================================
-           SEARCH ERROR
-      ===================================== -->
-
-      <!-- <div
-        class="visitor-error"
-        *ngIf="visitorError">
-
-        {{ visitorError }}
-
-      </div> -->
 
     </div>
 
@@ -461,87 +472,6 @@
           />
 
         </div>
-
-
-        <!-- ====================================
-             ADDRESS
-        ===================================== -->
-
-        <!-- <div class="form-group full-width">
-
-          <label for="visitorAddress">
-
-            Address
-
-            <span class="required">*</span>
-
-          </label>
-
-
-          <input
-            id="visitorAddress"
-            type="text"
-            name="visitorAddress"
-            [(ngModel)]="visitorAddress"
-            placeholder="Enter address"
-            maxlength="30"
-          />
-
-        </div> -->
-
-
-        <!-- ====================================
-             STATE
-        ===================================== -->
-
-        <!-- <div class="form-group">
-
-          <label for="visitorState">
-
-            State
-
-            <span class="required">*</span>
-
-          </label>
-
-
-          <input
-            id="visitorState"
-            type="text"
-            name="visitorState"
-            [(ngModel)]="visitorState"
-            placeholder="State"
-            maxlength="10"
-          />
-
-        </div> -->
-
-
-        <!-- ====================================
-             DISTRICT
-        ===================================== -->
-
-        <!-- <div class="form-group">
-
-          <label for="visitorDistrict">
-
-            District
-
-            <span class="required">*</span>
-
-          </label>
-
-
-          <input
-            id="visitorDistrict"
-            type="text"
-            name="visitorDistrict"
-            [(ngModel)]="visitorDistrict"
-            placeholder="District"
-            maxlength="20"
-          />
-
-        </div> -->
 
       </div>
 

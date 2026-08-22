@@ -83,6 +83,205 @@
                 *ngIf="mobileVerified && isUpdateMode && f['mobileNo'].value">
                 Welcome back — we've pre-filled your details below.
               </small>
+
+
+<!-- =====================================================
+     CHECK-IN / CHECK-OUT STATUS
+====================================================== -->
+
+<div
+  class="checkin-status"
+  *ngIf="!checkInOutLoading && checkInOutMeeting">
+
+  <!-- CHECK-IN AVAILABLE -->
+
+  <div
+    class="checkin-card checkin-available"
+    *ngIf="checkInOutStatus === 'CHECK_IN'">
+
+    <div class="checkin-info">
+
+      <strong>
+        Check-in available
+      </strong>
+
+      <small>
+        Approved time:
+        {{ checkInOutMeeting.approvedMeetingTime }}
+      </small>
+
+    </div>
+
+    <button
+      type="button"
+      class="checkin-btn"
+      (click)="performCheckInOut()">
+
+      Check In
+
+    </button>
+
+  </div>
+
+
+  <!-- CHECK-OUT AVAILABLE -->
+
+  <div
+    class="checkin-card checkout-available"
+    *ngIf="checkInOutStatus === 'CHECK_OUT'">
+
+    <div class="checkin-info">
+
+      <strong>
+        Check-out available
+      </strong>
+
+      <small>
+        Checked in at:
+        {{ formatTime(checkInOutMeeting.entryTime) }}
+      </small>
+
+    </div>
+
+    <button
+      type="button"
+      class="checkout-btn"
+      (click)="performCheckInOut()">
+
+      Check Out
+
+    </button>
+
+  </div>
+
+
+  <!-- ALREADY CHECKED OUT -->
+
+  <div
+    class="checkin-card already-checked-out"
+    *ngIf="checkInOutStatus === 'ALREADY_CHECKED_OUT'">
+
+    <div class="checkin-info">
+
+      <strong>
+        Already checked out
+      </strong>
+
+      <small>
+        Check-out time:
+        {{ formatTime(checkInOutMeeting.exitTime) }}
+      </small>
+
+    </div>
+
+  </div>
+
+</div><!-- =====================================================
+     CHECK-IN / CHECK-OUT LOADING
+====================================================== -->
+
+<!-- =====================================================
+     CHECK-IN / CHECK-OUT STATUS
+====================================================== -->
+
+<div
+  class="checkin-status"
+  *ngIf="!checkInOutLoading && checkInOutMeeting">
+
+  <!-- CHECK-IN AVAILABLE -->
+
+  <div
+    class="checkin-card checkin-available"
+    *ngIf="checkInOutStatus === 'CHECK_IN'">
+
+    <div class="checkin-info">
+
+      <strong>
+        Check-in available
+      </strong>
+
+      <small>
+        Approved time:
+        {{ checkInOutMeeting.approvedMeetingTime }}
+      </small>
+
+    </div>
+
+    <button
+      type="button"
+      class="checkin-btn"
+      (click)="performCheckInOut()">
+
+      Check In
+
+    </button>
+
+  </div>
+
+
+  <!-- CHECK-OUT AVAILABLE -->
+
+  <div
+    class="checkin-card checkout-available"
+    *ngIf="checkInOutStatus === 'CHECK_OUT'">
+
+    <div class="checkin-info">
+
+      <strong>
+        Check-out available
+      </strong>
+
+      <small>
+        Checked in at:
+        {{ formatTime(checkInOutMeeting.entryTime) }}
+      </small>
+
+    </div>
+
+    <button
+      type="button"
+      class="checkout-btn"
+      (click)="performCheckInOut()">
+
+      Check Out
+
+    </button>
+
+  </div>
+
+
+  <!-- ALREADY CHECKED OUT -->
+
+  <div
+    class="checkin-card already-checked-out"
+    *ngIf="checkInOutStatus === 'ALREADY_CHECKED_OUT'">
+
+    <div class="checkin-info">
+
+      <strong>
+        Already checked out
+      </strong>
+
+      <small>
+        Check-out time:
+        {{ formatTime(checkInOutMeeting.exitTime) }}
+      </small>
+
+    </div>
+
+  </div>
+
+</div>
+            </div>
+          </div>
+
+          <div class="gate-card mode-card">
+            <div class="gate-fields">
+              <label>Purpose of visit</label>
+              <select formControlName="purposeOfVisit">
+                <option value="official">Official</option>
+                <option value="personal">Personal</option>
+              </select>
             </div>
           </div>
 
@@ -92,14 +291,14 @@
               <svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 4.6 4.7.5-3.6 3.1 1.1 4.7-4-2.6-4 2.6 1.1-4.7-3.6-3.1 4.7-.5L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
             </div>
             <div class="gate-fields">
-              <label>Purpose of Visit <span class="needed">*</span></label>
-              <input type="text" formControlName="purposeOfVisit" maxlength="30" placeholder="e.g. Client meeting, delivery, interview">
+              <label>Description of Visit <span class="needed">*</span></label>
+              <input type="text" formControlName="descriptionOfVisit" maxlength="30" placeholder="e.g. Client meeting, delivery, interview">
               <small class="error" *ngIf="f['purposeOfVisit'].touched && f['purposeOfVisit'].errors?.['required']">Required</small>
             </div>
           </div>
 
           <!-- 4. Mode of Visit -->
-          <div class="gate-card mode-card">
+          <!-- <div class="gate-card mode-card">
             <div class="gate-fields">
               <label>Mode of Visit</label>
               <select formControlName="modeOfVisit">
@@ -107,7 +306,7 @@
                 <option value="Unit">Visit</option>
               </select>
             </div>
-          </div>
+          </div> -->
 
         </div>
 
@@ -202,13 +401,29 @@
               <h3>Organisation</h3>
             </div>
             <div class="form-card-body two-col">
-              <div class="form-group">
+              <div
+                class="form-group"
+                *ngIf="visitorForm.get('purposeOfVisit')?.value !== 'personal'">
+
                 <label>Organisation</label>
-                <input type="text" formControlName="organisation" maxlength="50">
+
+                <input
+                  type="text"
+                  formControlName="organisation"
+                  maxlength="50">
               </div>
-              <div class="form-group">
+
+
+              <div
+                class="form-group"
+                *ngIf="visitorForm.get('purposeOfVisit')?.value !== 'personal'">
+
                 <label>Designation</label>
-                <input type="text" formControlName="designation" maxlength="30">
+
+                <input
+                  type="text"
+                  formControlName="designation"
+                  maxlength="30">
               </div>
               <div class="form-group full">
                 <label>Organisation Address</label>
