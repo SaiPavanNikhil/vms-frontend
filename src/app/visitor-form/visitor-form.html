@@ -83,6 +83,82 @@
                 *ngIf="mobileVerified && isUpdateMode && f['mobileNo'].value">
                 Welcome back — we've pre-filled your details below.
               </small>
+<!-- CHECK-IN / CHECK-OUT STATUS -->
+
+<div
+  class="checkin-status"
+  *ngIf="!checkInOutLoading && checkInOutMeeting">
+
+  <!-- CHECK-IN PROCESSING / AVAILABLE -->
+
+  <div
+    class="checkin-card checkin-available"
+    *ngIf="checkInOutStatus === 'CHECK_IN'">
+
+    <div class="checkin-info">
+
+      <strong>
+        Checking in visitor...
+      </strong>
+
+      <small>
+        Approved time:
+        {{ checkInOutMeeting.approvedMeetingTime }}
+      </small>
+
+    </div>
+
+  </div>
+
+
+  <!-- CHECKED IN -->
+
+  <div
+    class="checkin-card checkout-available"
+    *ngIf="checkInOutStatus === 'CHECK_OUT'">
+
+    <div class="checkin-info">
+
+      <strong>
+        Visitor Checked In
+      </strong>
+
+      <small>
+        Checked in at:
+        {{ formatTime(checkInOutMeeting.entryTime) }}
+      </small>
+
+      <small>
+        Automatic check-out occurs 1 hour after check-in.
+      </small>
+
+    </div>
+
+  </div>
+
+
+  <!-- ALREADY CHECKED OUT -->
+
+  <div
+    class="checkin-card already-checked-out"
+    *ngIf="checkInOutStatus === 'ALREADY_CHECKED_OUT'">
+
+    <div class="checkin-info">
+
+      <strong>
+        Already Checked Out
+      </strong>
+
+      <small>
+        Check-out time:
+        {{ formatTime(checkInOutMeeting.exitTime) }}
+      </small>
+
+    </div>
+
+  </div>
+
+</div>
             </div>
           </div>
 

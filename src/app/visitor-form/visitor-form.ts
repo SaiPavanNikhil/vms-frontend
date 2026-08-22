@@ -888,12 +888,19 @@ checkVisitorMeeting(mobileNo: string): void {
 
     next: (response) => {
 
-      this.checkInOutLoading = false;
+  this.checkInOutLoading = false;
 
-      this.checkInOutMeeting = response;
+  console.log('CHECK-IN/OUT API RESPONSE:', response);
+  console.log('APPROVED MEETING TIME:', response.approvedMeetingTime);
+  console.log(
+    'APPROVED MEETING TIME TYPE:',
+    typeof response.approvedMeetingTime
+  );
 
-      this.determineCheckInOutStatus(response);
-    },
+  this.checkInOutMeeting = response;
+
+  this.determineCheckInOutStatus(response);
+},
 
     error: (error) => {
 
@@ -1380,42 +1387,72 @@ parseTime(
     return null;
   }
 
-  const value =
-    time.trim().toUpperCase();
+  const value = time.trim().toUpperCase();
 
-  const match =
-    value.match(
-      /^(\d{1,2}):(\d{2})\s*(AM|PM)$/
-    );
+  // Supports:
+  // 04:30 PM
+  // 4:30 PM
+  // 04:30:00 PM
+  // 17:30
+  // 17:30:00
 
-  if (!match) {
-    return null;
+  let match = value.match(
+    /^(\d{1,2}):(\d{2})(?::\d{2})?\s*(AM|PM)$/
+  );
+
+  if (match) {
+
+    let hours = Number(match[1]);
+    const minutes = Number(match[2]);
+    const period = match[3];
+
+    if (period === 'AM' && hours === 12) {
+      hours = 0;
+    }
+
+    if (period === 'PM' && hours !== 12) {
+      hours += 12;
+    }
+
+    return {
+      hours,
+      minutes
+    };
   }
 
-  let hours =
-    Number(match[1]);
 
-  const minutes =
-    Number(match[2]);
+  // 24-hour format
+  match = value.match(
+    /^(\d{1,2}):(\d{2})(?::\d{2})?$/
+  );
 
-  const period =
-    match[3];
+  if (match) {
 
+    const hours = Number(match[1]);
+    const minutes = Number(match[2]);
 
-  if (period === 'AM' && hours === 12) {
-    hours = 0;
+    if (
+      hours < 0 ||
+      hours > 23 ||
+      minutes < 0 ||
+      minutes > 59
+    ) {
+      return null;
+    }
+
+    return {
+      hours,
+      minutes
+    };
   }
 
-  if (period === 'PM' && hours !== 12) {
-    hours += 12;
-  }
 
+  console.error(
+    'Unable to parse approved meeting time:',
+    time
+  );
 
-  return {
-    hours,
-    minutes
-  };
-
+  return null;
 }
 
 minutesToTime(
